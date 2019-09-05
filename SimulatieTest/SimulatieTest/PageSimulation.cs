@@ -63,7 +63,7 @@ namespace SimulatieTest
         {
             Page simulatedPage = this.page.SimulateNewPage(this.varience, this.random);
             BikeMessage message = new BikeMessage(simulatedPage);
-            simulationBike.ReceivedData(message.GetBytes());
+            this.simulationBike.ReceivedData(message.GetBytes());
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)

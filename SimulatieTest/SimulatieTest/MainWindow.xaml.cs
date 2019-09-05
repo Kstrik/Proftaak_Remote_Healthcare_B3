@@ -28,6 +28,20 @@ namespace SimulatieTest
         {
             InitializeComponent();
 
+            for(int i = 0; i < 100; i++)
+            {
+                WrapPanel wrapPanel = new WrapPanel();
+                Label label = new Label();
+                label.Content = "Test" + i.ToString();
+
+                TextBox textBox = new TextBox();
+                textBox.Width = 100;
+
+                wrapPanel.Children.Add(label);
+                wrapPanel.Children.Add(textBox);
+                stk_Panel.Children.Add(wrapPanel);
+            }
+
             Page16 page16 = new Page16(0x19, 0x66, 0x63, 0x03, 0xFF, 3, 4);
             Page25 page25 = new Page25(0x7A, 0x49, 0x32, 0x06, 0x00, 0x33);
 
