@@ -40,10 +40,5 @@ namespace SimulatieTest
                 this.bitField
             };
         }
-
-        public override string ToString()
-        {
-            
-        }
     }
 }

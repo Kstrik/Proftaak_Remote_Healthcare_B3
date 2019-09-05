@@ -25,7 +25,7 @@ namespace SimulatieTest
             InitializeComponent();
 
             Page16 p16 = new Page16(0x19, 0x66, 0x63, 0x25, 0xFF, 0x00, 0x07);
-            Console.WriteLine(p16.GetBytes().ToString());
+            string test = p16.ToString();
         }
     }
 }

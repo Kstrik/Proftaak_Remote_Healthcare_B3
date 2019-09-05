@@ -33,6 +33,9 @@ namespace SimulatieTest
             return (result);
         }
 
-        public abstract override string ToString();
+        public override string ToString()
+        {
+            return BitConverter.ToString(GetBytes()).Replace("-", " ");
+        }
     }
 }
