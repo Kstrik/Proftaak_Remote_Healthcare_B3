@@ -28,18 +28,19 @@ namespace SimulatieTest
         {
             InitializeComponent();
 
-            //Page16 page = new Page16(0x19, 0x66, 0x63, 0x03, 0xFF, 3, 4);
-            //Page25 page = new Page25(0x7A, 0x49, 0x32, 0x06, 0x00, 0x33);
+            Page16 page16 = new Page16(0x19, 0x66, 0x63, 0x03, 0xFF, 3, 4);
+            Page25 page25 = new Page25(0x7A, 0x49, 0x32, 0x06, 0x00, 0x33);
 
-            //bike = new SimulationBike(this);
-            //bike.AddPageSimualtion(page, 10, 500);
+            bike = new SimulationBike(this);
+            bike.AddPageSimualtion(page16, 10, 1000);
+            bike.AddPageSimualtion(page25, 10, 2000);
 
             //Page16 page = new Page16(0x19, 0x66, 0x63, 0x03, 0xFF, 3, 4);
             //Page16 page = new Page16(0x19, 0x68, 0x63, 0x02, 0xFF, 3, 4);
             //Page16 page = new Page16(0x19, 0x66, 0x63, 0x03, 0xFF, 0x34);
-            Page25 page = new Page25(0x7A, 0x49, 0x32, 0x06, 0x00, 0x33);
-            BikeMessage message = new BikeMessage(page);
-            txb_Messages.Text = BitConverter.ToString(message.GetBytes());
+            //Page25 page = new Page25(0x7A, 0x49, 0x32, 0x06, 0x00, 0x33);
+            //BikeMessage message = new BikeMessage(page);
+            //txb_Messages.Text = BitConverter.ToString(message.GetBytes());
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -47,7 +48,7 @@ namespace SimulatieTest
             bike.ToggleListening();
         }
 
-        public void ReceiveBikeData(byte[] data)
+        public void ReceiveBikeData(byte[] data, Bike bike)
         {
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {

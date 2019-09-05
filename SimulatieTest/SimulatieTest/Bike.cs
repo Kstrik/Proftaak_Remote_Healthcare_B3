@@ -23,7 +23,7 @@ namespace SimulatieTest
         {
             if (this.bikeDataReceiver != null)
             {
-                bikeDataReceiver.ReceiveBikeData(data);
+                bikeDataReceiver.ReceiveBikeData(data, this);
             }
         }
     }

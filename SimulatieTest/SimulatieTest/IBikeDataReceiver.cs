@@ -8,6 +8,6 @@ namespace SimulatieTest
 {
     public interface IBikeDataReceiver
     {
-        void ReceiveBikeData(byte[] data);
+        void ReceiveBikeData(byte[] data, Bike bike);
     }
 }
