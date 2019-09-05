@@ -8,7 +8,8 @@ namespace SimulatieTest
 {
     public abstract class Page
     {
-        protected byte pageID;
+        public byte pageID;
+
         public Page(byte pageID)
         {
             this.pageID = pageID;
@@ -16,26 +17,37 @@ namespace SimulatieTest
 
         public abstract byte[] GetBytes();
 
-        protected static byte ReverseByte(byte inByte)
+        public abstract int GetLength();
+
+        public static byte ReverseByte(byte inByte)
         {
             byte result = 0x00;
 
-            for (byte mask = 0x00; Convert.ToInt32(mask) > 0; mask >>= 1)
+            for (byte mask = 0x80; Convert.ToInt32(mask) > 0; mask >>= 1)
             {
                 result = (byte)(result >> 1);
 
-                var tempByte = (byte)(inByte & mask);
-                if (tempByte != 0x00)
+                var tempbyte = (byte)(inByte & mask);
+                if (tempbyte != 0x00)
                 {
-                    result = (byte)(result | 0x00);
+                    result = (byte)(result | 0x80);
                 }
             }
+
             return (result);
         }
+
+        public abstract Page SimulateNewPage(double variance, Random random);
 
         public override string ToString()
         {
             return BitConverter.ToString(GetBytes()).Replace("-", " ");
+        }
+
+        public static byte RandomWithVariance(Random random, byte value, double variance)
+        {
+            double valueWithPrc = ((value / 100) * variance);
+            return (byte)random.Next((int)(value - valueWithPrc), (int)(value + valueWithPrc));
         }
     }
 }

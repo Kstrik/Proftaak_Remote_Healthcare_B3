@@ -6,12 +6,25 @@ using System.Threading.Tasks;
 
 namespace SimulatieTest
 {
-    class Bike
+    public abstract class Bike
     {
-        public byte[] byteString;
-        public Bike()
-        {
+        public IBikeDataReceiver bikeDataReceiver;
 
+        public Bike(IBikeDataReceiver bikeDataReceiver)
+        {
+            this.bikeDataReceiver = bikeDataReceiver;
+        }
+
+        public abstract bool ToggleListening();
+        public abstract bool StartListening();
+        public abstract bool StopListening();
+
+        public virtual void ReceivedData(byte[] data)
+        {
+            if (this.bikeDataReceiver != null)
+            {
+                bikeDataReceiver.ReceiveBikeData(data);
+            }
         }
     }
 }

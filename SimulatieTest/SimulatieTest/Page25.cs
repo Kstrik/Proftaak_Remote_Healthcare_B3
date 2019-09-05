@@ -8,26 +8,39 @@ namespace SimulatieTest
 {
     class Page25 : Page
     {
-        byte updateEventCount;
-        byte instantaneousCadence;
-        byte accumulatedPowerLSB;
-        byte accumulatedPowerMSB;
-        byte instantaneousPowerLSB;
-        byte instantaneousPowerMSB;
-        byte trainerField;
-        byte bitFields;
-
-        public Page25(byte updateEventCount, byte instantaneousCadence, byte accumulatedPowerLSB, byte instantaneousPowerLSB, byte trainerField, byte flagBitField, byte stateBitField) 
-            : base(19)
+        public byte updateEventCount;
+        public byte instantaneousCadence;
+        public byte accumulatedPowerLSB;
+        public byte accumulatedPowerMSB;
+        public byte instantaneousPowerLSB;
+        public byte instantaneousPowerMSB;
+        public byte trainerField;
+        public byte bitFields;
+        
+        public Page25(byte updateEventCount, byte instantaneousCadence, byte accumulatedPowerMSB, byte instantaneousPowerMSB, byte trainerField, byte flagBitField, byte stateBitField) 
+            : base(0x19)
         {
             this.updateEventCount = updateEventCount;
             this.instantaneousCadence = instantaneousCadence;
-            this.accumulatedPowerLSB = accumulatedPowerLSB;
-            this.accumulatedPowerMSB = ReverseByte(accumulatedPowerLSB);
-            this.instantaneousPowerLSB = instantaneousPowerLSB;
-            this.instantaneousPowerMSB = ReverseByte(instantaneousPowerLSB);
+            this.accumulatedPowerLSB = ReverseByte(accumulatedPowerMSB);
+            this.accumulatedPowerMSB = accumulatedPowerMSB;
+            this.instantaneousPowerLSB = ReverseByte(instantaneousPowerMSB);
+            this.instantaneousPowerMSB = instantaneousPowerMSB;
             this.trainerField = trainerField;
-            this.bitFields = (byte)((flagBitField << 4) & stateBitField);
+            this.bitFields = (byte)((flagBitField << 4) | stateBitField);
+        }
+
+        public Page25(byte updateEventCount, byte instantaneousCadence, byte accumulatedPowerMSB, byte instantaneousPowerMSB, byte trainerField, byte bitFields)
+            : base(0x19)
+        {
+            this.updateEventCount = updateEventCount;
+            this.instantaneousCadence = instantaneousCadence;
+            this.accumulatedPowerLSB = ReverseByte(accumulatedPowerMSB);
+            this.accumulatedPowerMSB = accumulatedPowerMSB;
+            this.instantaneousPowerLSB = ReverseByte(instantaneousPowerMSB);
+            this.instantaneousPowerMSB = instantaneousPowerMSB;
+            this.trainerField = trainerField;
+            this.bitFields = bitFields;
         }
 
         public override byte[] GetBytes()
@@ -39,10 +52,26 @@ namespace SimulatieTest
                 this.instantaneousCadence,
                 this.accumulatedPowerLSB,
                 this.accumulatedPowerMSB,
-                (byte)((this.instantaneousPowerLSB << 4) & (this.instantaneousPowerMSB >> 2)),
-                (byte)((this.instantaneousPowerMSB << 4) & this.trainerField),
+                (byte)((this.instantaneousPowerLSB << 4) | (this.instantaneousPowerMSB >> 2)),
+                (byte)((this.instantaneousPowerMSB << 4) | this.trainerField),
                 this.bitFields
             };
+        }
+
+        public override int GetLength()
+        {
+            return 9;
+        }
+
+        public override Page SimulateNewPage(double variance, Random random)
+        {
+            Page25 page = new Page25(RandomWithVariance(random, this.updateEventCount, variance),
+                                        this.instantaneousCadence,
+                                        (byte)(this.accumulatedPowerMSB + RandomWithVariance(random, this.instantaneousPowerMSB, variance)),
+                                        RandomWithVariance(random, this.instantaneousPowerMSB, variance),
+                                        this.trainerField,
+                                        this.bitFields);
+            return page;
         }
     }
 }

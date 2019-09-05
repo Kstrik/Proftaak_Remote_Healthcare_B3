@@ -9,7 +9,10 @@
     <Grid>
         <TabControl >
             <TabItem Header="Numbers">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <Button Content="Toggle Simulation" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="192" Click="Button_Click" Height="46"/>
+                    <TextBox x:Name="txb_Messages" HorizontalAlignment="Left" Height="371" Margin="207,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="569"/>
+                </Grid>
             </TabItem>
             <TabItem Header="Graphs">
                 <Grid Background="#FFE5E5E5" Margin="2,0,-2,0.2">
