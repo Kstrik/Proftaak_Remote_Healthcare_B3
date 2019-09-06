@@ -69,20 +69,23 @@ namespace SimulatieTest
                 List<string> keys = translatedData.Keys.ToList();
                 List<int> values = translatedData.Values.ToList();
 
-                if(values[0] == 16)
+                if(values.Count != 0)
                 {
-                    txb_MessagesP16.Text = "";
-                    for (int i = 0; i < values.Count; i++)
+                    if (values[0] == 16)
                     {
-                        txb_MessagesP16.Text += keys[i] + ": " + values[i] + Environment.NewLine;
+                        txb_MessagesP16.Text = "";
+                        for (int i = 0; i < values.Count; i++)
+                        {
+                            txb_MessagesP16.Text += keys[i] + ": " + values[i] + Environment.NewLine;
+                        }
                     }
-                }
-                else if(values[0] == 25)
-                {
-                    txb_MessagesP25.Text = "";
-                    for (int i = 0; i < values.Count; i++)
+                    else if (values[0] == 25)
                     {
-                        txb_MessagesP25.Text += keys[i] + ": " + values[i] + Environment.NewLine;
+                        txb_MessagesP25.Text = "";
+                        for (int i = 0; i < values.Count; i++)
+                        {
+                            txb_MessagesP25.Text += keys[i] + ": " + values[i] + Environment.NewLine;
+                        }
                     }
                 }
             }));
@@ -95,7 +98,7 @@ namespace SimulatieTest
 
         private void Button_Real_Bike_Click(object sender, RoutedEventArgs e)
         {
-            this.realBike = new RealBike("00457", this);
+            this.realBike = new RealBike("00472", this);
         }
     }
 }
