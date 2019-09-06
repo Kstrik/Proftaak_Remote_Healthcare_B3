@@ -100,5 +100,19 @@ namespace SimulatieTest
         {
             this.realBike = new RealBike("00472", this);
         }
+
+        private void Checkbock_Checked(object sender, RoutedEventArgs e)
+        {
+            btn_Simulation.IsEnabled = true;
+            btn_RealBike.IsEnabled = false;
+            this.realBike = null;
+        }
+
+        private void Checkbock_UnChecked(object sender, RoutedEventArgs e)
+        {
+            btn_Simulation.IsEnabled = false;
+            btn_RealBike.IsEnabled = true;
+            this.simulationBike.StopListening();
+        }
     }
 }

@@ -25,10 +25,11 @@
             </TabItem>
             <TabItem Header="Simulation">
                 <Grid Background="#FFE5E5E5">
-                    <Button Content="Toggle Simulation" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="192" Click="Button_Simulation_Click" Height="46"/>
+                    <Button x:Name="btn_Simulation" Content="Toggle Simulation" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="192" Click="Button_Simulation_Click" Height="46" IsEnabled="False"/>
                     <TextBox x:Name="txb_MessagesP16" HorizontalAlignment="Left" Height="371" Margin="207,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="275"/>
                     <TextBox x:Name="txb_MessagesP25" HorizontalAlignment="Left" Height="371" Margin="487,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="289"/>
-                    <Button Content="Toggle Real Bike" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="192" Click="Button_Real_Bike_Click" Height="46"/>
+                    <Button x:Name="btn_RealBike" Content="Toggle Real Bike" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="192" Click="Button_Real_Bike_Click" Height="46"/>
+                    <CheckBox Content="Simulation" Checked="Checkbock_Checked" Unchecked="Checkbock_UnChecked" HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Graphs">
