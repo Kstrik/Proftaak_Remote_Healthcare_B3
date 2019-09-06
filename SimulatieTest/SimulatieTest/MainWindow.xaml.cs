@@ -22,7 +22,7 @@ namespace SimulatieTest
     /// </summary>
     public partial class MainWindow : Window, IBikeDataReceiver
     {
-        SimulationBike bike;
+        Bike bike;
 
         public MainWindow()
         {
@@ -45,10 +45,10 @@ namespace SimulatieTest
             Page16 page16 = new Page16(0x19, 0x66, 0x63, 0x03, 0xFF, 3, 4);
             Page25 page25 = new Page25(0x7A, 0x49, 0x32, 0x06, 0x00, 0x33);
 
-            bike = new SimulationBike(this);
-            bike.AddPageSimualtion(page16, 10, 1000);
-            bike.AddPageSimualtion(page25, 10, 2000);
-
+            //bike = new SimulationBike(this);
+            //bike.AddPageSimualtion(page16, 10, 1000);
+            //bike.AddPageSimualtion(page25, 10, 2000);
+            bike = new RealBike("00457", this);
             //Page16 page = new Page16(0x19, 0x66, 0x63, 0x03, 0xFF, 3, 4);
             //Page16 page = new Page16(0x19, 0x68, 0x63, 0x02, 0xFF, 3, 4);
             //Page16 page = new Page16(0x19, 0x66, 0x63, 0x03, 0xFF, 0x34);
