@@ -25,9 +25,10 @@
             </TabItem>
             <TabItem Header="Simulation">
                 <Grid Background="#FFE5E5E5">
-                    <Button Content="Toggle Simulation" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="192" Click="Button_Click" Height="46"/>
+                    <Button Content="Toggle Simulation" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="192" Click="Button_Simulation_Click" Height="46"/>
                     <TextBox x:Name="txb_MessagesP16" HorizontalAlignment="Left" Height="371" Margin="207,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="275"/>
                     <TextBox x:Name="txb_MessagesP25" HorizontalAlignment="Left" Height="371" Margin="487,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="289"/>
+                    <Button Content="Toggle Real Bike" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="192" Click="Button_Real_Bike_Click" Height="46"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Graphs">

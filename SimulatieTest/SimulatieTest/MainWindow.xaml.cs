@@ -22,8 +22,8 @@ namespace SimulatieTest
     /// </summary>
     public partial class MainWindow : Window, IBikeDataReceiver
     {
-        Bike bike;
-
+        SimulationBike simulationBike;
+        RealBike realBike;
         public MainWindow()
         {
             InitializeComponent();
@@ -45,9 +45,9 @@ namespace SimulatieTest
             Page16 page16 = new Page16(0x19, 0x66, 0x63, 0x03, 0xFF, 3, 4);
             Page25 page25 = new Page25(0x7A, 0x49, 0x32, 0x06, 0x00, 0x33);
 
-            bike = new SimulationBike(this);
-            bike.AddPageSimualtion(page16, 10, 1000);
-            bike.AddPageSimualtion(page25, 10, 2000);
+            simulationBike = new SimulationBike(this);
+            simulationBike.AddPageSimualtion(page16, 10, 250);
+            simulationBike.AddPageSimualtion(page25, 10, 250);
 
             //Page16 page = new Page16(0x19, 0x66, 0x63, 0x03, 0xFF, 3, 4);
             //Page16 page = new Page16(0x19, 0x68, 0x63, 0x02, 0xFF, 3, 4);
@@ -55,11 +55,6 @@ namespace SimulatieTest
             //Page25 page = new Page25(0x7A, 0x49, 0x32, 0x06, 0x00, 0x33);
             //BikeMessage message = new BikeMessage(page);
             //txb_Messages.Text = BitConverter.ToString(message.GetBytes());
-        }
-
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            bike.ToggleListening();
         }
 
         public void ReceiveBikeData(byte[] data, Bike bike)
@@ -93,15 +88,14 @@ namespace SimulatieTest
             }));
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Simulation_Click(object sender, RoutedEventArgs e)
         {
-            this.bike.ToggleListening();
+            this.simulationBike.ToggleListening();
+        }
+
+        private void Button_Real_Bike_Click(object sender, RoutedEventArgs e)
+        {
+            this.realBike = new RealBike("00457", this);
         }
     }
 }
-
-            bike = new SimulationBike(this);
-            bike.AddPageSimualtion(page16, 10, 250);
-            bike.AddPageSimualtion(page25, 10, 250);
-
-            bike = new RealBike("00457", this);

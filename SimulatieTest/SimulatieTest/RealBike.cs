@@ -18,9 +18,6 @@ namespace SimulatieTest
             bikeThread.Start();
         }
 
-        
-
-
         private async void ConnectToBike()
         {
             Console.WriteLine("Starting connection to bike");
@@ -63,8 +60,5 @@ namespace SimulatieTest
         {
             throw new NotImplementedException();
         }
-
     }
-
-    
 }
