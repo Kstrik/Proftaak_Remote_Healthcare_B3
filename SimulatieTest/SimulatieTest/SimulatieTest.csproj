@@ -59,6 +59,7 @@
     <Compile Include="PageSimulation.cs" />
     <Compile Include="RealBike.cs" />
     <Compile Include="SimulationBike.cs" />
+    <Compile Include="TacxTranslator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -8,7 +8,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <TabControl>
-            <TabItem Header="Simulation">
+            <TabItem Header="Numbers">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="178*"/>
@@ -23,10 +23,11 @@
                     <Button x:Name="Button_Timer" Click="Button_Click" HorizontalAlignment="Left" Margin="15,169,0,0" VerticalAlignment="Top" Width="113" Height="24" Content="Toggle Simulation" Grid.Row="1"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Numbers">
+            <TabItem Header="Simulation">
                 <Grid Background="#FFE5E5E5">
                     <Button Content="Toggle Simulation" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="192" Click="Button_Click" Height="46"/>
-                    <TextBox x:Name="txb_Messages" HorizontalAlignment="Left" Height="371" Margin="207,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="569"/>
+                    <TextBox x:Name="txb_MessagesP16" HorizontalAlignment="Left" Height="371" Margin="207,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="275"/>
+                    <TextBox x:Name="txb_MessagesP25" HorizontalAlignment="Left" Height="371" Margin="487,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="289"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Graphs">
