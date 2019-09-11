@@ -1,0 +1,21 @@
+﻿<Window x:Class="NetworkingTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetworkingTest"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <TextBox x:Name="txb_ServerLog" HorizontalAlignment="Left" Height="252" Margin="10,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" Text="" VerticalAlignment="Top" Width="380"/>
+        <Button Content="Start server" HorizontalAlignment="Left" VerticalAlignment="Top" Width="187" Margin="10,344,0,0" Height="30" Click="ServerStart_Click"/>
+        <TextBox x:Name="txb_ClientLog" HorizontalAlignment="Left" Height="252" Margin="402,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" Text="" VerticalAlignment="Top" Width="380"/>
+        <Button Content="Start client" HorizontalAlignment="Left" VerticalAlignment="Top" Width="187" Margin="402,344,0,0" Height="30" Click="ClientStart_Click"/>
+        <TextBox x:Name="txb_ServerInput" HorizontalAlignment="Left" Height="72" Margin="10,267,0,0" TextWrapping="Wrap" AcceptsReturn="True" Text="" VerticalAlignment="Top" Width="380"/>
+        <TextBox x:Name="txb_ClientInput" HorizontalAlignment="Left" Height="72" Margin="402,267,0,0" TextWrapping="Wrap" AcceptsReturn="True" Text="" VerticalAlignment="Top" Width="380"/>
+        <Button Content="Transmit to client" HorizontalAlignment="Left" VerticalAlignment="Top" Width="380" Margin="10,379,0,0" Height="30" Click="TransmitServer_Click"/>
+        <Button Content="Transmit to server" HorizontalAlignment="Left" VerticalAlignment="Top" Width="380" Margin="402,379,0,0" Height="30" Click="TransmitClient_Click"/>
+        <Button Content="Stop server" HorizontalAlignment="Left" VerticalAlignment="Top" Width="187" Margin="203,344,0,0" Height="30" Click="ServerStop_Click"/>
+        <Button Content="Stop client" HorizontalAlignment="Left" VerticalAlignment="Top" Width="187" Margin="595,344,0,0" Height="30" Click="ClientStop_Click"/>
+    </Grid>
+</Window>
