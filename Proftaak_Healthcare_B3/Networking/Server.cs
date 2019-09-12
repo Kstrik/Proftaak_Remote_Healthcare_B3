@@ -19,16 +19,20 @@ namespace Networking
         private TcpListener listener;
         private Thread listenerThread;
 
+        private IDataReceiver receiver;
+        private IServerConnector connector;
         private ILogger logger;
 
         private List<ClientConnection> connections;
 
-        public Server(string ip, int port, ILogger logger)
+        public Server(string ip, int port, IDataReceiver receiver, IServerConnector connector, ILogger logger)
         {
             this.isReady = IPAddress.TryParse(ip, out this.host);
             this.isRunning = false;
 
             this.port = port;
+            this.receiver = receiver;
+            this.connector = connector;
             this.logger = logger;
 
             this.connections = new List<ClientConnection>();
@@ -45,9 +49,10 @@ namespace Networking
                         Thread.Sleep(200);
                         continue;
                     }
-                    ClientConnection connection = new ClientConnection(this.listener.AcceptTcpClient(), this.logger, this);
+                    ClientConnection connection = new ClientConnection(this.listener.AcceptTcpClient(), this.receiver, this.logger, this);
                     this.connections.Add(connection);
                     connection.Connect();
+                    this.connector.OnClientConnected(connection);
                     this.logger.Log($"Client connected on {connection.GetIp()} using port {connection.GetPort()}\n");
                 }
             });
@@ -85,7 +90,10 @@ namespace Networking
             {
                 this.isRunning = false;
                 foreach (ClientConnection connection in this.connections)
+                {
                     connection.Disconnect();
+                    this.connector.OnClientDisconnected(connection);
+                }
                 this.connections.Clear();
 
                 this.listener.Stop();
@@ -96,7 +104,10 @@ namespace Networking
         public void DiconnectClient(ClientConnection connection)
         {
             if(connection != null)
+            {
                 this.connections.Remove(connection);
+                this.connector.OnClientDisconnected(connection);
+            }
         }
 
         public void Transmit(byte[] data, string clientId)

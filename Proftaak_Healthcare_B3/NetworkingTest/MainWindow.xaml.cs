@@ -23,7 +23,7 @@ namespace NetworkingTest
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IDataReceiver, IServerConnector
     {
         private Server server;
         private Client client;
@@ -38,14 +38,14 @@ namespace NetworkingTest
             this.serverLogField = new LogField(txb_ServerLog);
             this.clientLogField = new LogField(txb_ClientLog);
 
-            this.server = new Server("127.0.0.1", 1330, this.serverLogField);
-            //this.client = new Client("127.0.0.1", 1330, this.clientLogField);
-            this.client = new Client("145.48.6.10", 6666, this.clientLogField);
+            this.server = new Server("127.0.0.1", 1330, this, this, this.serverLogField);
+            this.client = new Client("127.0.0.1", 1330, this, this.clientLogField);
+            //this.client = new Client("145.48.6.10", 6666, this, this.clientLogField);
 
             Packet packet = new Packet();
             packet.AddItem("id", "session/list");
 
-            Map map = new Map(256, 256, 1000, @"C:\Users\Kenley Strik\Documents\School\Leerjaar 2019-2020\Periode 1\Proftaak Remote Healthcare\Sprint 2\HeightMap.jpeg");
+            Map map = new Map(256, 256, 1000, @"C:\Users\Kenley Strik\Documents\School\Avans Hogeschool\Leerjaar 2019-2020\Periode 1\Proftaak Remote Healthcare\Sprint 2\HeightMap.jpeg");
             img_Map.Source = BitmapToImageSource(map.GetBitmap());
         }
 
@@ -93,6 +93,32 @@ namespace NetworkingTest
 
                 return bitmapimage;
             }
+        }
+
+        public void OnDataReceived(byte[] data)
+        {
+            string received = Encoding.UTF8.GetString(data);
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                txb_ServerInput.Text = $"Recieved: {received}";
+                txb_ClientInput.Text = $"Recieved: {received}";
+            }));
+        }
+
+        public void OnClientConnected(ClientConnection connection)
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                this.serverLogField.Log($"{connection.Id} connected!\n");
+            }));
+        }
+
+        public void OnClientDisconnected(ClientConnection connection)
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                this.serverLogField.Log($"{connection.Id} disconnected!\n");
+            }));
         }
     }
 

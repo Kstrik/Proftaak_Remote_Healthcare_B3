@@ -16,22 +16,28 @@ namespace Networking
 
         public string Id { get; set; }
 
+        private IDataReceiver receiver;
         private ILogger logger;
+
         private Server server;
 
-        public ClientConnection(TcpClient client, ILogger logger, Server server, string id)
+        public ClientConnection(TcpClient client, IDataReceiver receiver, ILogger logger, Server server, string id)
         {
             this.isConnected = false;
 
             this.client = client;
             this.stream = this.client.GetStream();
 
+            this.receiver = receiver;
             this.logger = logger;
             this.server = server;
             this.Id = id;
 
             InitilizeListenerThread();
         }
+
+        public ClientConnection(TcpClient client, IDataReceiver receiver, ILogger logger, Server server)
+            : this(client, receiver, logger, server, "") { }
 
         private void InitilizeListenerThread()
         {
@@ -45,12 +51,11 @@ namespace Networking
                         Disconnect();
                         this.server.DiconnectClient(this);
                     }
+                    else
+                        this.receiver.OnDataReceived(bytes);
                 }
             });
         }
-
-        public ClientConnection(TcpClient client, ILogger logger, Server server)
-            : this(client, logger, server, "") { }
 
         public bool Connect()
         {

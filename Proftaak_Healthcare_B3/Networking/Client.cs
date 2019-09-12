@@ -18,16 +18,18 @@ namespace Networking
         private TcpClient client;
         private NetworkStream stream;
 
+        private IDataReceiver receiver;
         private ILogger logger;
 
         private Thread listenerThread;
 
-        public Client(string ip, int port, ILogger logger)
+        public Client(string ip, int port, IDataReceiver receiver, ILogger logger)
         {
             this.isReady = IPAddress.TryParse(ip, out host);
             this.isConnected = false;
 
             this.port = port;
+            this.receiver = receiver;
             this.logger = logger;
         }
 
@@ -40,6 +42,8 @@ namespace Networking
                     byte[] bytes = Receive();
                     if (bytes.Length == 0)
                         Disconnect();
+                    else
+                        this.receiver.OnDataReceived(bytes);
                 }
             });
         }
