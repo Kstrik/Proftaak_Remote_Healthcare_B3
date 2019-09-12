@@ -117,7 +117,7 @@ namespace Networking
                 do
                 {
                     int readBytes = this.stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
-                    bytesRead = readBytes;
+                    bytesRead += readBytes;
                 }
                 while (this.stream.DataAvailable);
 

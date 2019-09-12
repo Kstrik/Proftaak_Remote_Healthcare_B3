@@ -1,6 +1,8 @@
 ﻿using Networking;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -37,11 +39,14 @@ namespace NetworkingTest
             this.clientLogField = new LogField(txb_ClientLog);
 
             this.server = new Server("127.0.0.1", 1330, this.serverLogField);
-            this.client = new Client("127.0.0.1", 1330, this.clientLogField);
-            //this.client = new Client("145.48.6.10", 6666, this.clientLogField);
+            //this.client = new Client("127.0.0.1", 1330, this.clientLogField);
+            this.client = new Client("145.48.6.10", 6666, this.clientLogField);
 
             Packet packet = new Packet();
             packet.AddItem("id", "session/list");
+
+            Map map = new Map(256, 256, 1000, @"C:\Users\Kenley Strik\Documents\School\Leerjaar 2019-2020\Periode 1\Proftaak Remote Healthcare\Sprint 2\HeightMap.jpeg");
+            img_Map.Source = BitmapToImageSource(map.GetBitmap());
         }
 
         private void ServerStart_Click(object sender, RoutedEventArgs e)
@@ -72,6 +77,22 @@ namespace NetworkingTest
         private void TransmitClient_Click(object sender, RoutedEventArgs e)
         {
             this.client.Transmit(Encoding.UTF8.GetBytes(txb_ClientInput.Text));
+        }
+
+        private BitmapImage BitmapToImageSource(Bitmap bitmap)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                memory.Position = 0;
+                BitmapImage bitmapimage = new BitmapImage();
+                bitmapimage.BeginInit();
+                bitmapimage.StreamSource = memory;
+                bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapimage.EndInit();
+
+                return bitmapimage;
+            }
         }
     }
 
