@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
@@ -25,6 +25,14 @@ namespace Networking
             {
                 object temp;
                 info.AddValue(key, items.TryGetValue(key, out temp), items.TryGetValue(key, out temp).GetType());
+            }
+        }
+
+        public void printPacket()
+        {
+            foreach (KeyValuePair<string, object> kvp in items)
+            {
+                Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
             }
         }
     }
