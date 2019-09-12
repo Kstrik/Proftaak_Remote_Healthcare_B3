@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2D822C39-A3ED-40F0-8A76-7327BB33757D}</ProjectGuid>
+    <ProjectGuid>{04B7E3DA-A917-4347-8695-789989F71C2F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>SimulatieTest</RootNamespace>
-    <AssemblyName>SimulatieTest</AssemblyName>
+    <RootNamespace>NetworkingTest</RootNamespace>
+    <AssemblyName>NetworkingTest</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,10 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BLELibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\BLELibrary.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -59,11 +55,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BikeMessage.cs" />
-    <Compile Include="PageSimulation.cs" />
-    <Compile Include="RealBike.cs" />
-    <Compile Include="SimulationBike.cs" />
-    <Compile Include="TacxTranslator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -72,17 +63,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Bike.cs" />
-    <Compile Include="IBikeDataReceiver.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Page.cs" />
-    <Compile Include="Page16.cs" />
-    <Compile Include="Page25.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -109,10 +95,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="image\Bicycle.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="BLELibrary.dll" />
+    <ProjectReference Include="..\Networking\Networking.csproj">
+      <Project>{a68611bb-92f9-4e03-b042-05ca9881a624}</Project>
+      <Name>Networking</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

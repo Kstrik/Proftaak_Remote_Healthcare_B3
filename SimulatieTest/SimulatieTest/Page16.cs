@@ -8,23 +8,42 @@ namespace SimulatieTest
 {
     class Page16 : Page
     {
-        byte equipmentTypeBitField;
-        byte elapsedTime;
-        byte distanceTraveled;
-        byte speedLSB;
-        byte speedMSB;
-        byte heartrate;
-        byte bitField; 
-        public Page16(byte equipmentTypeBitField, byte elapsedTime, byte distanceTraveled, byte speedLSB, byte heartrate, byte capabillitiesBitField, byte feStateBitField) 
-            : base(10)
+        public byte equipmentTypeBitField;
+        public byte elapsedTime;
+        public byte distanceTraveled;
+        public byte speedLSB;
+        public byte speedMSB;
+        public byte heartrate;
+        public byte capabillitiesBitField;
+        public byte feStateBitField;
+        public byte bitFields; 
+
+        public Page16(byte equipmentTypeBitField, byte elapsedTime, byte distanceTraveled, byte speedMSB, byte heartrate, byte capabillitiesBitField, byte feStateBitField) 
+            : base(0x10)
         {
             this.equipmentTypeBitField = equipmentTypeBitField;
             this.elapsedTime = elapsedTime;
             this.distanceTraveled = distanceTraveled;
-            this.speedLSB = speedLSB;
-            this.speedMSB = ReverseByte(speedLSB);
+            this.speedLSB = ReverseByte(speedMSB);
+            this.speedMSB = speedMSB;
             this.heartrate = heartrate;
-            this.bitField = (byte)((capabillitiesBitField <<= 4) & feStateBitField);
+            this.capabillitiesBitField = capabillitiesBitField;
+            this.feStateBitField = feStateBitField;
+            this.bitFields = (byte)((capabillitiesBitField << 4) | feStateBitField);
+        }
+
+        public Page16(byte equipmentTypeBitField, byte elapsedTime, byte distanceTraveled, byte speedMSB, byte heartrate, byte bitFields)
+            : base(0x10)
+        {
+            this.equipmentTypeBitField = equipmentTypeBitField;
+            this.elapsedTime = elapsedTime;
+            this.distanceTraveled = distanceTraveled;
+            this.speedLSB = ReverseByte(speedMSB);
+            this.speedMSB = speedMSB;
+            this.heartrate = heartrate;
+            this.capabillitiesBitField = (byte)(bitFields >> 4);
+            this.feStateBitField = (byte)(bitFields & 15);
+            this.bitFields = bitFields;
         }
 
         public override byte[] GetBytes()
@@ -37,8 +56,24 @@ namespace SimulatieTest
                 this.speedLSB,
                 this.speedMSB,
                 this.heartrate,
-                this.bitField
+                this.bitFields
             };
+        }
+
+        public override int GetLength()
+        {
+            return 9;
+        }
+
+        public override Page SimulateNewPage(double variance, Random random)
+        {
+            Page16 page = new Page16(this.equipmentTypeBitField, 
+                                    RandomWithVariance(random, this.elapsedTime, variance),
+                                    (byte)(this.distanceTraveled + variance), 
+                                    RandomWithVariance(random, this.speedMSB, variance), 
+                                    RandomWithVariance(random, this.heartrate, variance), 
+                                    this.capabillitiesBitField, this.feStateBitField);
+            return page;
         }
     }
 }

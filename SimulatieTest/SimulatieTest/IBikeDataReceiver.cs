@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SimulatieTest
 {
-    class BikeController
+    public interface IBikeDataReceiver
     {
+        void ReceiveBikeData(byte[] data, Bike bike);
     }
 }

@@ -7,40 +7,34 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TabControl >
+        <TabControl>
             <TabItem Header="Numbers">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="178*"/>
+                        <RowDefinition Height="213*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.Background>
+                        <ImageBrush ImageSource="image/Bicycle.jpg"  />
+                    </Grid.Background>
+                    <ScrollViewer VerticalScrollBarVisibility="Visible" CanContentScroll="True" Margin="10,10,10,49" Grid.RowSpan="2" >
+                        <StackPanel x:Name="stk_Panel" Grid.RowSpan="2"></StackPanel>
+                    </ScrollViewer>
+                    <Button x:Name="Button_Timer" HorizontalAlignment="Left" Margin="15,169,0,0" VerticalAlignment="Top" Width="113" Height="24" Content="Toggle Simulation" Grid.Row="1"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Simulation">
+                <Grid Background="#FFE5E5E5">
+                    <Button x:Name="btn_Simulation" Content="Toggle Simulation" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top" Width="192" Click="Button_Simulation_Click" Height="46" IsEnabled="False"/>
+                    <TextBox x:Name="txb_MessagesP16" HorizontalAlignment="Left" Height="371" Margin="207,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="275"/>
+                    <TextBox x:Name="txb_MessagesP25" HorizontalAlignment="Left" Height="371" Margin="487,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Top" Width="289"/>
+                    <Button x:Name="btn_RealBike" Content="Toggle Real Bike" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="192" Click="Button_Real_Bike_Click" Height="46"/>
+                    <CheckBox Content="Simulation" Checked="Checkbock_Checked" Unchecked="Checkbock_UnChecked" HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top"/>
+                </Grid>
             </TabItem>
             <TabItem Header="Graphs">
                 <Grid Background="#FFE5E5E5" Margin="2,0,-2,0.2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="155*"/>
-                        <ColumnDefinition Width="633*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Content="Snelheid Meter:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Rotattie P/M:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Wattage:" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Ecumelated P:" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Instantanious P:" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Bit Field:" HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Result"  Name="snelheid" HorizontalAlignment="Left" Margin="155,10,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,41,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,72,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,103,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,134,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,165,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label Content="EquipmentType BitField" HorizontalAlignment="Left" Margin="10,200,0,0" VerticalAlignment="Top" RenderTransformOrigin="5.691,0.57"/>
-                    <Label Content="Elapsed Time:" HorizontalAlignment="Left" Margin="10,231,0,0" VerticalAlignment="Top" RenderTransformOrigin="5.691,0.57"/>
-                    <Label Content="Distance Traveled Meter" HorizontalAlignment="Left" Margin="10,262,0,0" VerticalAlignment="Top" RenderTransformOrigin="5.691,0.57"/>
-                    <Label Content="Heartrate:" HorizontalAlignment="Left" Margin="7,293,0,0" VerticalAlignment="Top" RenderTransformOrigin="5.691,0.57"/>
-                    <Label Content="Capabillities BitField:" HorizontalAlignment="Left" Margin="7,324,0,0" VerticalAlignment="Top" RenderTransformOrigin="5.691,0.57"/>
-                    <Label Content="FE State BitField:" HorizontalAlignment="Left" Margin="7,355,0,0" VerticalAlignment="Top" RenderTransformOrigin="5.691,0.57"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,200,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,231,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,262,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,293,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,324,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" RenderTransformOrigin="0.692,0.453"/>
-                    <Label Content="Result:" HorizontalAlignment="Left" Margin="155,355,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+
                 </Grid>
             </TabItem>
         </TabControl>
