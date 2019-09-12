@@ -10,7 +10,7 @@ namespace Networking.VrServer
     {
         string dest;
 
-        //Maak een factiry aan met een dest id. Je moet dus al verbonden zijn met de VR server.
+        //Maak een factory aan met een dest id. Je moet dus al verbonden zijn met de VR server.
         public MessageFactory(string dest)
         {
             this.dest = dest;
@@ -41,7 +41,7 @@ namespace Networking.VrServer
 
         public string generateResetMessage()
         {
-            Message payload  = new Message("scene/reset");
+            Message payload = new Message("scene/reset");
             return JsonParse(payload);
         }
 
@@ -53,11 +53,27 @@ namespace Networking.VrServer
 
         }
 
+        public string generateAddRouteMessage(RouteNode[] route)
+        {
+            Message payload = new Message("route/add");
+            payload.data.Add("route", route);
+            return JsonParse(payload);
+        }
 
-        //skybox settime
-        //roads add
+        public string generateAddRoadMessage(string routeuuid, string diffuse, string normal, string specular, double heightoffset)
+        {
+            Message payload = new Message("scene/road/add");
+            payload.data.Add("route", routeuuid);
+            payload.data.Add("diffuse", diffuse);
+            payload.data.Add("normal", normal);
+            payload.data.Add("specular", specular);
+            payload.data.Add("heightoffset", heightoffset);
+            return JsonParse(payload);
+        }
+        
+
+
         //terrain add
-        //route add
         //node add
         //
         //Todo:
