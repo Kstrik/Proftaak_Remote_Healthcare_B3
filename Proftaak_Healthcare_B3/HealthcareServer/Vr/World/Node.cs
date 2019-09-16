@@ -56,6 +56,7 @@ namespace HealthcareServer.Vr.World
 
         public async Task Add()
         {
+            await Task.Run(() => this.terrain.Add());
             Response response = await this.session.SendAction(GetAddJsonObject(), new ActionRequest("tunnel/send", "scene/node/add", this));
             this.Id = (response.Status == Response.ResponseStatus.SUCCES) ? (string)response.Value : "";
         }

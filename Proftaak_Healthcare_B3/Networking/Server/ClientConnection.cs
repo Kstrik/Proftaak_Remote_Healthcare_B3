@@ -114,16 +114,17 @@ namespace Networking.Server
                 messagesize |= (((int)sizeinfo[3]) << 24);
 
                 byte[] buffer = new byte[messagesize];
-                int bytesRead = 0;
+                totalread = 0;
 
-                do
+                currentread = totalread = this.stream.Read(buffer, totalread, buffer.Length - totalread);
+
+                while (totalread < messagesize && currentread > 0)
                 {
-                    int readBytes = this.stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
-                    bytesRead += readBytes;
+                    currentread = this.stream.Read(buffer, totalread, buffer.Length - totalread);
+                    totalread += currentread;
                 }
-                while (this.stream.DataAvailable);
 
-                string responseData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                string responseData = Encoding.UTF8.GetString(buffer, 0, totalread);
                 if (responseData.Length != 0)
                     this.logger.Log($"Received: {responseData}\n");
 

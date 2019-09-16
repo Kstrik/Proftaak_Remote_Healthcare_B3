@@ -19,7 +19,6 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using UIControls.Menu.Sidemenu;
 
 namespace HealthcareServer
 {
@@ -53,12 +52,10 @@ namespace HealthcareServer
             //skyBox.Time = 19;
 
             this.client = new Client("145.48.6.10", 6666, this, this);
-            this.session = new Session(ref client, "DESKTOP-94EBEFC");
+            this.session = new Session(ref client, "DESKTOP-KENLEY");
             this.client.Connect();
             this.isInitialized = false;
             this.terrainAdded = false;
-
-            grd_Grid.Children.Add(new Sidemenu(250, 50, 400));
         }
 
         private async Task Initialize()

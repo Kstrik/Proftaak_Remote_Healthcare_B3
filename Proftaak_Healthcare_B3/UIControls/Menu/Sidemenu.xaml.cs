@@ -14,14 +14,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace UIControls.Menu.Sidemenu
+namespace UIControls.Menu
 {
     /// <summary>
     /// Interaction logic for Sidemenu.xaml
     /// </summary>
     public partial class Sidemenu : UserControl
     {
-        private Menu menu;
+        public Menu Menu;
         private Window parentWindow;
 
         private int contentWidth;
@@ -32,11 +32,11 @@ namespace UIControls.Menu.Sidemenu
 
         private bool isOpen;
 
-        public Sidemenu(int contentWidth, int menuBarWidth, int animationDuration)
+        public Sidemenu(int contentWidth, int menuBarWidth, int animationDuration, SolidColorBrush backgroundColor, SolidColorBrush foregroundColor, SolidColorBrush hoverBackgroundColor, SolidColorBrush hoverForegroundColor)
         {
             InitializeComponent();
 
-            this.menu = new Menu();
+            this.Menu = new Menu(contentWidth, 1080, backgroundColor, foregroundColor, hoverBackgroundColor, hoverForegroundColor);
             this.contentWidth = contentWidth;
             this.menuBarWidth = menuBarWidth;
 
@@ -55,17 +55,23 @@ namespace UIControls.Menu.Sidemenu
         {
             this.parentWindow = Window.GetWindow(this);
             this.parentWindow.SizeChanged += ParentWindow_SizeChanged;
-            //((Grid)this.Parent).SizeChanged += Sidemenu_SizeChanged;
+
+            scv_Content.Width = this.contentWidth;
             stk_Content.Width = this.contentWidth;
             stk_MenuBar.Width = this.menuBarWidth;
             grd_Grid.Width = this.contentWidth + this.menuBarWidth;
+            scv_Content.Height = this.parentWindow.Height;
+            stk_MenuBar.Height = this.parentWindow.Height;
+
             this.Margin = new Thickness(-this.contentWidth, 0, 0, 0);
+            stk_Content.Children.Add(this.Menu.GetUIComponent());
         }
 
         private void ParentWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             this.Height = e.NewSize.Height;
-            stk_Content.Height = this.Height;
+            scv_Content.Height = this.Height;
+            //stk_Content.Height = this.Height;
             stk_MenuBar.Height = this.Height;
             grd_Grid.Width = this.contentWidth + this.menuBarWidth;
         }
@@ -89,6 +95,11 @@ namespace UIControls.Menu.Sidemenu
             }
             storyBoard.Begin(this);
             this.isOpen = !this.isOpen;
+        }
+
+        public int GetMenuBarWidth()
+        {
+            return this.menuBarWidth;
         }
     }
 }

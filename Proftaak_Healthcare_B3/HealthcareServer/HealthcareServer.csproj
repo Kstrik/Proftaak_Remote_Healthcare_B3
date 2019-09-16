@@ -60,6 +60,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dashboard.xaml.cs">
+      <DependentUpon>Dashboard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vr\Actions\ActionRequest.cs" />
     <Compile Include="HealthCareServer.cs" />
     <Compile Include="ClientSession.cs" />
@@ -80,6 +83,10 @@
     <Compile Include="Vr\World\Route.cs" />
     <Compile Include="Vr\World\Scene.cs" />
     <Compile Include="Vr\World\SkyBox.cs" />
+    <Page Include="Dashboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

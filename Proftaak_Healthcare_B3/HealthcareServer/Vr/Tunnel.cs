@@ -57,7 +57,7 @@ namespace HealthcareServer.Vr
 
                     status = data.GetValue("status").ToString();
 
-                    if(jsonData.ContainsKey("id"))
+                    if(data.ContainsKey("id"))
                         tunnelId = data.GetValue("id").ToString();
                 }
             });
