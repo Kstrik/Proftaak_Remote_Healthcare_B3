@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace Networking
+namespace Networking.Server
 {
     public class ClientConnection
     {
@@ -16,12 +16,12 @@ namespace Networking
 
         public string Id { get; set; }
 
-        private IDataReceiver receiver;
+        private IClientDataReceiver receiver;
         private ILogger logger;
 
         private Server server;
 
-        public ClientConnection(TcpClient client, IDataReceiver receiver, ILogger logger, Server server, string id)
+        public ClientConnection(TcpClient client, IClientDataReceiver receiver, ILogger logger, Server server)
         {
             this.isConnected = false;
 
@@ -31,13 +31,10 @@ namespace Networking
             this.receiver = receiver;
             this.logger = logger;
             this.server = server;
-            this.Id = id;
+            this.Id = HashUtil.HashMD5(GetIp() + GetPort());
 
             InitilizeListenerThread();
         }
-
-        public ClientConnection(TcpClient client, IDataReceiver receiver, ILogger logger, Server server)
-            : this(client, receiver, logger, server, "") { }
 
         private void InitilizeListenerThread()
         {
@@ -52,7 +49,7 @@ namespace Networking
                         this.server.DiconnectClient(this);
                     }
                     else
-                        this.receiver.OnDataReceived(bytes);
+                        this.receiver.OnDataReceived(bytes, this.Id);
                 }
             });
         }
@@ -143,9 +140,9 @@ namespace Networking
             return this.client.Client.RemoteEndPoint.ToString().Split(':')[0];
         }
 
-        public string GetPort()
+        public int GetPort()
         {
-            return this.client.Client.RemoteEndPoint.ToString().Split(':')[1];
+            return int.Parse(this.client.Client.RemoteEndPoint.ToString().Split(':')[1]);
         }
     }
 }

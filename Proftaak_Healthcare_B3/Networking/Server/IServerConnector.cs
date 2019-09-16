@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Networking
+namespace Networking.Server
 {
     public interface IServerConnector
     {

@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace Networking
+namespace Networking.Server
 {
     public class Server
     {
@@ -19,13 +19,13 @@ namespace Networking
         private TcpListener listener;
         private Thread listenerThread;
 
-        private IDataReceiver receiver;
+        private IClientDataReceiver receiver;
         private IServerConnector connector;
         private ILogger logger;
 
         private List<ClientConnection> connections;
 
-        public Server(string ip, int port, IDataReceiver receiver, IServerConnector connector, ILogger logger)
+        public Server(string ip, int port, IClientDataReceiver receiver, IServerConnector connector, ILogger logger)
         {
             this.isReady = IPAddress.TryParse(ip, out this.host);
             this.isRunning = false;

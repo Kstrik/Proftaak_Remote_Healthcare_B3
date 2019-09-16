@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Networking
+namespace Networking.Client
 {
-    public interface IDataReceiver
+    public interface IServerDataReceiver
     {
         void OnDataReceived(byte[] data);
     }

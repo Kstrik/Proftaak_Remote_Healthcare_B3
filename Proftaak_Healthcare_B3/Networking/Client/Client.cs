@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-namespace Networking
+namespace Networking.Client
 {
     public class Client
     {
@@ -18,12 +18,12 @@ namespace Networking
         private TcpClient client;
         private NetworkStream stream;
 
-        private IDataReceiver receiver;
+        private IServerDataReceiver receiver;
         private ILogger logger;
 
         private Thread listenerThread;
 
-        public Client(string ip, int port, IDataReceiver receiver, ILogger logger)
+        public Client(string ip, int port, IServerDataReceiver receiver, ILogger logger)
         {
             this.isReady = IPAddress.TryParse(ip, out host);
             this.isConnected = false;
@@ -86,6 +86,7 @@ namespace Networking
 
         public void Transmit(byte[] data)
         {
+            string test = Encoding.UTF8.GetString(data);
             if(data != null && this.isConnected)
             {
                 byte[] sizeinfo = new byte[4];
@@ -121,21 +122,42 @@ namespace Networking
                 messagesize |= (((int)sizeinfo[2]) << 16);
                 messagesize |= (((int)sizeinfo[3]) << 24);
 
-                byte[] buffer = new byte[messagesize];
-                int bytesRead = 0;
+                byte[] data = new byte[messagesize];
+                totalread = 0;
 
-                do
+                currentread = totalread = this.stream.Read(data,
+                             totalread,
+                            data.Length - totalread);
+
+                while (totalread < messagesize && currentread > 0)
                 {
-                    int readBytes = this.stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
-                    bytesRead += readBytes;
+                    currentread = this.stream.Read(data,
+                             totalread,
+                            data.Length - totalread);
+                    totalread += currentread;
                 }
-                while (this.stream.DataAvailable);
 
-                string responseData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                if(responseData.Length != 0)
+                string responseData = Encoding.UTF8.GetString(data, 0, totalread);
+                if (responseData.Length != 0)
                     this.logger.Log($"Received: {responseData}\n");
 
-                return buffer;
+                return data;
+
+                //byte[] buffer = new byte[messagesize];
+                //int bytesRead = 0;
+
+                //do
+                //{
+                //    int readBytes = this.stream.Read(buffer, bytesRead, buffer.Length - bytesRead);
+                //    bytesRead += readBytes;
+                //}
+                //while (this.stream.DataAvailable);
+
+                //string responseData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                //if(responseData.Length != 0)
+                //    this.logger.Log($"Received: {responseData}\n");
+
+                //return buffer;
             }
             catch(Exception e)
             {

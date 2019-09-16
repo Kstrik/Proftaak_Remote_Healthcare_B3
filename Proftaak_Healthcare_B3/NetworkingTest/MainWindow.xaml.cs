@@ -1,4 +1,6 @@
 ﻿using Networking;
+using Networking.Client;
+using Networking.Server;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -23,9 +25,9 @@ namespace NetworkingTest
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IDataReceiver, IServerConnector
+    public partial class MainWindow : Window, IServerDataReceiver, IServerConnector
     {
-        private Server server;
+        //private Server server;
         private Client client;
 
         private LogField serverLogField;
@@ -38,20 +40,20 @@ namespace NetworkingTest
             this.serverLogField = new LogField(txb_ServerLog);
             this.clientLogField = new LogField(txb_ClientLog);
 
-            this.server = new Server("127.0.0.1", 1330, this, this, this.serverLogField);
-            this.client = new Client("127.0.0.1", 1330, this, this.clientLogField);
-            //this.client = new Client("145.48.6.10", 6666, this, this.clientLogField);
+            //this.server = new Server("127.0.0.1", 1330, this, this, this.serverLogField);
+            //this.client = new Client("127.0.0.1", 1330, this, this.clientLogField);
+            this.client = new Client("145.48.6.10", 6666, this, this.clientLogField);
 
-            Packet packet = new Packet();
-            packet.AddItem("id", "session/list");
+            //Packet packet = new Packet();
+            //packet.AddItem("id", "session/list");
 
-            Map map = new Map(256, 256, 1000, @"C:\Users\Kenley Strik\Documents\School\Avans Hogeschool\Leerjaar 2019-2020\Periode 1\Proftaak Remote Healthcare\Sprint 2\HeightMap.jpeg");
-            img_Map.Source = BitmapToImageSource(map.GetBitmap());
+            //Map map = new Map(256, 256, 1000, @"C:\Users\Kenley Strik\Documents\School\Avans Hogeschool\Leerjaar 2019-2020\Periode 1\Proftaak Remote Healthcare\Sprint 2\HeightMap.jpeg");
+            //img_Map.Source = BitmapToImageSource(map.GetBitmap());
         }
 
         private void ServerStart_Click(object sender, RoutedEventArgs e)
         {
-            this.server.Start();
+            //this.server.Start();
         }
 
         private void ClientStart_Click(object sender, RoutedEventArgs e)
@@ -61,7 +63,7 @@ namespace NetworkingTest
 
         private void ServerStop_Click(object sender, RoutedEventArgs e)
         {
-            this.server.Stop();
+            //this.server.Stop();
         }
 
         private void ClientStop_Click(object sender, RoutedEventArgs e)
@@ -71,7 +73,7 @@ namespace NetworkingTest
 
         private void TransmitServer_Click(object sender, RoutedEventArgs e)
         {
-            this.server.Transmit(Encoding.UTF8.GetBytes(txb_ServerInput.Text), "");
+            //this.server.Transmit(Encoding.UTF8.GetBytes(txb_ServerInput.Text), "");
         }
 
         private void TransmitClient_Click(object sender, RoutedEventArgs e)
@@ -97,11 +99,11 @@ namespace NetworkingTest
 
         public void OnDataReceived(byte[] data)
         {
-            string received = Encoding.UTF8.GetString(data);
+            //string received = Encoding.UTF8.GetString(data);
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                txb_ServerInput.Text = $"Recieved: {received}";
-                txb_ClientInput.Text = $"Recieved: {received}";
+                //txb_ServerInput.Text = $"Recieved: {received}";
+                //txb_ClientInput.Text = $"Recieved: {received}";
             }));
         }
 
@@ -119,6 +121,20 @@ namespace NetworkingTest
             {
                 this.serverLogField.Log($"{connection.Id} disconnected!\n");
             }));
+        }
+
+        private void AddTerrain(Terrain terrain, string id)
+        {
+            string message = "{'id' : 'tunnel/send','data' :{'dest' : '" + id + "','data' : {'id' : 'scene/terrain/add','data' :{'size' : [ " + terrain.Width + ", " + terrain.Depth + " ],'heights' : [" + string.Join(",", terrain.GetHeights()) + "]}}}";
+
+            txb_ServerInput.Text = string.Join(",", terrain.GetHeights());
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Terrain terrain = new Terrain(256, 256, 50, @"C:\Users\Kenley Strik\Documents\School\Avans Hogeschool\Leerjaar 2019-2020\Periode 1\Proftaak Remote Healthcare\Sprint 2\HeightMap.jpeg", true);
+
+            AddTerrain(terrain, txb_ServerInput.Text);
         }
     }
 

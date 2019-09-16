@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Networking
+namespace Networking.VrServer
 {
     public class Packet : ISerializable
     {
