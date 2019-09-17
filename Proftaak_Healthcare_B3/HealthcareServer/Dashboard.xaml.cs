@@ -66,38 +66,16 @@ namespace HealthcareServer
             this.logField.AcceptsReturn = true;
             this.logField.Margin = new Thickness(0, 0, 0, 0);
             this.logField.Foreground = Brushes.White;
-            this.logField.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
+            this.logField.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF1E1E1E"));
             this.logField.BorderBrush = Brushes.Transparent;
             this.logField.Height = 250;
             this.logContainer.GetContentPanel().Children.Add(this.logField);
 
             this.client = new Client("145.48.6.10", 6666, this, this);
-            this.session = new Session(ref client, "DESKTOP-KENLEY");
+            //this.session = new Session(ref client, "DESKTOP-KENLEY");
             this.client.Connect();
 
-            Button resetSceneButton = new Button();
-            resetSceneButton.Content = "Reset scene";
-            resetSceneButton.Foreground = Brushes.White;
-            resetSceneButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
-            resetSceneButton.BorderBrush = Brushes.Transparent;
-            resetSceneButton.Margin = new Thickness(5, 5, 5, 5);
-            resetSceneButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) => 
-            {
-                Task.Run(() => this.session.GetScene().Reset());
-            });
-            Button startSessionButton = new Button();
-            startSessionButton.Content = "Start session";
-            startSessionButton.Foreground = Brushes.White;
-            startSessionButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
-            startSessionButton.BorderBrush = Brushes.Transparent;
-            startSessionButton.Margin = new Thickness(5, 5, 5, 5);
-            startSessionButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
-            {
-                Task.Run(() => Initialize());
-            });
-
-            this.propertiesContainer.GetContentPanel().Children.Add(resetSceneButton);
-            this.propertiesContainer.GetContentPanel().Children.Add(startSessionButton);
+            SetupButtons();
         }
 
         private void Dashboard_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -105,8 +83,9 @@ namespace HealthcareServer
             Environment.Exit(0);
         }
 
-        private async Task Initialize()
+        private async Task Initialize(string sessionHost)
         {
+            this.session = new Session(ref client, sessionHost);
             await this.session.Create();
         }
 
@@ -320,6 +299,46 @@ namespace HealthcareServer
             addRoute.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
             addRoute.BorderBrush = Brushes.Transparent;
             return addRoute;
+        }
+
+        private void SetupButtons()
+        {
+            Button resetSceneButton = new Button();
+            resetSceneButton.Content = "Reset scene";
+            resetSceneButton.Foreground = Brushes.White;
+            resetSceneButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
+            resetSceneButton.BorderBrush = Brushes.Transparent;
+            resetSceneButton.Margin = new Thickness(5, 5, 5, 5);
+            resetSceneButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+            {
+                Task.Run(() => this.session.GetScene().Reset());
+            });
+
+            WrapPanel wrapPanel = new WrapPanel();
+            wrapPanel.Margin = new Thickness(5, 5, 5, 5);
+
+            Button startSessionButton = new Button();
+            startSessionButton.Content = "Start session";
+            startSessionButton.Foreground = Brushes.White;
+            startSessionButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
+            startSessionButton.BorderBrush = Brushes.Transparent;
+            startSessionButton.Margin = new Thickness(5, 5, 5, 5);
+            startSessionButton.Width = 100;
+            startSessionButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+            {
+                string host = ((wrapPanel.Children[0] as StackPanel).Children[1] as TextBox).Text;
+
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    Task.Run(() => Initialize(host));
+                }));
+            });
+
+            wrapPanel.Children.Add(GetInputField("Session host:", "", false));
+            wrapPanel.Children.Add(startSessionButton);
+
+            this.propertiesContainer.GetContentPanel().Children.Add(resetSceneButton);
+            this.propertiesContainer.GetContentPanel().Children.Add(wrapPanel);
         }
 
         private StackPanel GetInputField(string header, string text, bool isNumber)
