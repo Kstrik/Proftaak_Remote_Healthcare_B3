@@ -49,12 +49,12 @@ namespace HealthcareServer.Vr.World
                 this.routeNodes.Add(routeNode);
         }
 
-        public async Task SetRoad(Road road)
+        public void SetRoad(Road road)
         {
             if(road != null)
             {
                 this.Road = road;
-                await this.Road.Add();
+                //await this.Road.Add();
             }
         }
 
@@ -62,6 +62,9 @@ namespace HealthcareServer.Vr.World
         {
             Response response = await this.session.SendAction(GetAddJsonObject(), new ActionRequest("tunnel/send", "route/add", this));
             this.Id = (response.Status == Response.ResponseStatus.SUCCES) ? (string)response.Value : "";
+
+            if (this.Road != null)
+                await Task.Run(() => this.Road.Add());
         }
 
         private JObject GetAddJsonObject()

@@ -225,10 +225,19 @@ namespace HealthcareServer
             addNodeButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
             addNodeButton.BorderBrush = Brushes.Transparent;
 
+            Label lblModel = new Label();
+            lblModel.Content = "Model:";
+            lblModel.Foreground = Brushes.White;
+            ComboBox modelComboBox = new ComboBox();
+            modelComboBox.ItemsSource = Assets.Models;
+            StackPanel modelStackPanel = new StackPanel();
+            modelStackPanel.Children.Add(lblModel);
+            modelStackPanel.Children.Add(modelComboBox);
+
             StackPanel addNodePanel = new StackPanel();
             addNodePanel.Children.Add(GetInputField("Name: ", "", false));
             addNodePanel.Children.Add(transform);
-            addNodePanel.Children.Add(GetInputField("Model: ", "", false));
+            addNodePanel.Children.Add(modelStackPanel);
             addNodePanel.Children.Add(hasTerrain);
             addNodePanel.Children.Add(terrain);
             addNodePanel.Children.Add(addNodeButton);
@@ -254,7 +263,8 @@ namespace HealthcareServer
                     //-------------------------------------------------------
 
                     //---------------------- Model ----------------------
-                    string modelFile = ((addNodePanel.Children[2] as StackPanel).Children[1] as TextBox).Text;
+                    //string modelFile = ((addNodePanel.Children[2] as StackPanel).Children[1] as TextBox).Text;
+                    string modelFile = modelComboBox.SelectedItem.ToString();
                     if (!String.IsNullOrEmpty(modelFile))
                     {
                         Model model = new Model(modelFile, false);
@@ -289,8 +299,104 @@ namespace HealthcareServer
 
         private TabItem GetAddRouteTab()
         {
+            Label lblPoints = new Label();
+            lblPoints.Content = "Points:";
+            lblPoints.Foreground = Brushes.White;
+
+            StackPanel points = new StackPanel();
+            points.Children.Add(lblPoints);
+            points.Children.Add(GetPosDirField());
+            points.Children.Add(GetPosDirField());
+
             StackPanel addRoutePanel = new StackPanel();
 
+            Button addPointButton = new Button();
+            addPointButton.Content = "Add point";
+            addPointButton.Foreground = Brushes.White;
+            addPointButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
+            addPointButton.BorderBrush = Brushes.Transparent;
+            addPointButton.Margin = new Thickness(5, 5, 5, 5);
+            addPointButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+            {
+                points.Children.Add(GetPosDirField());
+            });
+
+            Button removePointButton = new Button();
+            removePointButton.Content = "Remove point";
+            removePointButton.Foreground = Brushes.White;
+            removePointButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
+            removePointButton.BorderBrush = Brushes.Transparent;
+            removePointButton.Margin = new Thickness(5, 5, 5, 5);
+            removePointButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+            {
+                if(points.Children.Count > 3)
+                {
+                    points.Children.RemoveAt(points.Children.Count - 1);
+                }
+            });
+
+            addRoutePanel.Children.Add(points);
+
+            StackPanel addRoad = new StackPanel();
+            addRoad.Children.Add(GetComboBoxField("Diffuse:", Assets.DiffuseTextures));
+            addRoad.Children.Add(GetComboBoxField("Normal:", Assets.NormalMaps));
+            addRoad.Children.Add(GetComboBoxField("Specular:", Assets.SpecularMaps));
+            addRoad.Children.Add(GetInputField("Heightoffset:", "0,01", true));
+            addRoad.Visibility = Visibility.Collapsed;
+            addRoad.Margin = new Thickness(0, 0, 0, 5);
+
+            CheckBox hasRoad = new CheckBox();
+            hasRoad.Foreground = Brushes.White;
+            hasRoad.Content = "Has road";
+            hasRoad.Margin = new Thickness(0, 5, 0, 5);
+            hasRoad.Checked += new RoutedEventHandler((object sender, RoutedEventArgs e) => { addRoad.Visibility = Visibility.Visible; });
+            hasRoad.Unchecked += new RoutedEventHandler((object sender, RoutedEventArgs e) => { addRoad.Visibility = Visibility.Collapsed; });
+
+            addRoutePanel.Children.Add(addPointButton);
+            addRoutePanel.Children.Add(removePointButton);
+            addRoutePanel.Children.Add(hasRoad);
+            addRoutePanel.Children.Add(addRoad);
+
+            Button addRouteButton = new Button();
+            addRouteButton.Content = "Add route";
+            addRouteButton.Foreground = Brushes.White;
+            addRouteButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
+            addRouteButton.BorderBrush = Brushes.Transparent;
+            addRouteButton.Margin = new Thickness(5, 5, 5, 5);
+            addRouteButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+            {
+                //---------------------- Route ----------------------
+                Route route = new Route(this.session);
+
+                for(int i = 1; i < points.Children.Count; i++)
+                {
+                    Vector3 position = new Vector3(float.Parse(((((points.Children[i] as WrapPanel).Children[0] as StackPanel).Children[1]) as TextBox).Text),
+                                                    float.Parse(((((points.Children[i] as WrapPanel).Children[1] as StackPanel).Children[1]) as TextBox).Text),
+                                                    float.Parse(((((points.Children[i] as WrapPanel).Children[2] as StackPanel).Children[1]) as TextBox).Text));
+                    Vector3 direction = new Vector3(float.Parse(((((points.Children[i] as WrapPanel).Children[3] as StackPanel).Children[1]) as TextBox).Text),
+                                                    float.Parse(((((points.Children[i] as WrapPanel).Children[4] as StackPanel).Children[1]) as TextBox).Text),
+                                                    float.Parse(((((points.Children[i] as WrapPanel).Children[5] as StackPanel).Children[1]) as TextBox).Text));
+                    route.AddRouteNode(new Route.RouteNode(position, direction));
+                }
+                //---------------------------------------------------
+
+                //---------------------- Road ----------------------
+                if(hasRoad.IsChecked == true)
+                {
+                    string diffuse = ((addRoad.Children[0] as StackPanel).Children[1] as ComboBox).SelectedItem.ToString();
+                    string normal = ((addRoad.Children[1] as StackPanel).Children[1] as ComboBox).SelectedItem.ToString();
+                    string specular = ((addRoad.Children[2] as StackPanel).Children[1] as ComboBox).SelectedItem.ToString();
+                    float heightOffset = float.Parse(((addRoad.Children[3] as StackPanel).Children[1] as TextBox).Text);
+
+                    Road road = new Road(diffuse, normal, specular, heightOffset, route, this.session);
+                    route.SetRoad(road);
+                }
+                //--------------------------------------------------
+
+                Task.Run(() => this.session.GetScene().AddRoute(route));
+            });
+
+            addRoutePanel.Children.Add(addRouteButton);
 
             TabItem addRoute = new TabItem();
             addRoute.Header = "Add Route";
@@ -364,6 +470,32 @@ namespace HealthcareServer
             StackPanel stackPanel = new StackPanel();
             stackPanel.Children.Add(label);
             stackPanel.Children.Add(textBox);
+            return stackPanel;
+        }
+
+        private WrapPanel GetPosDirField()
+        {
+            WrapPanel posDirField = new WrapPanel();
+            posDirField.Children.Add(GetInputField("PosX:", "0", true));
+            posDirField.Children.Add(GetInputField("PosY:", "0", true));
+            posDirField.Children.Add(GetInputField("PosZ:", "0", true));
+            posDirField.Children.Add(GetInputField("DirX:", "0", true));
+            posDirField.Children.Add(GetInputField("DirY:", "0", true));
+            posDirField.Children.Add(GetInputField("DirZ:", "0", true));
+            return posDirField;
+        }
+
+        private StackPanel GetComboBoxField(string header, List<string> items)
+        {
+            Label label = new Label();
+            label.Content = header;
+            label.Foreground = Brushes.White;
+            ComboBox comboBox = new ComboBox();
+            comboBox.ItemsSource = items;
+            StackPanel stackPanel = new StackPanel();
+            stackPanel.Children.Add(label);
+            stackPanel.Children.Add(comboBox);
+
             return stackPanel;
         }
 
