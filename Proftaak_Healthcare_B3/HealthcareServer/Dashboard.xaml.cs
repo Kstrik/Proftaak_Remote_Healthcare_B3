@@ -433,18 +433,28 @@ namespace HealthcareServer
             startSessionButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
             {
                 string host = ((wrapPanel.Children[0] as StackPanel).Children[1] as TextBox).Text;
-
-                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                {
-                    Task.Run(() => Initialize(host));
-                }));
+                Task.Run(() => Initialize(host));
             });
 
             wrapPanel.Children.Add(GetInputField("Session host:", "", false));
             wrapPanel.Children.Add(startSessionButton);
 
+            Button setTimeButton = new Button();
+            setTimeButton.Content = "Set time";
+            setTimeButton.Foreground = Brushes.White;
+            setTimeButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
+            setTimeButton.BorderBrush = Brushes.Transparent;
+            setTimeButton.Margin = new Thickness(5, 5, 5, 5);
+            setTimeButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+            {
+                int time = int.Parse(((this.propertiesContainer.GetContentPanel().Children[2] as StackPanel).Children[1] as TextBox).Text);
+                Task.Run(() => this.session.GetScene().GetSkyBox().SetTime(time));
+            });
+
             this.propertiesContainer.GetContentPanel().Children.Add(resetSceneButton);
             this.propertiesContainer.GetContentPanel().Children.Add(wrapPanel);
+            this.propertiesContainer.GetContentPanel().Children.Add(GetInputField("Time:", "12", true));
+            this.propertiesContainer.GetContentPanel().Children.Add(setTimeButton);
         }
 
         private StackPanel GetInputField(string header, string text, bool isNumber)

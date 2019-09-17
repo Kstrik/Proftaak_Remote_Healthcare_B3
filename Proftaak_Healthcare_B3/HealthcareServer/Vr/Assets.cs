@@ -60,12 +60,16 @@ namespace HealthcareServer.Vr
 
         public static List<string> DiffuseTextures = new List<string>()
         {
-            @"data\NetworkEngine\textures\tarmac_diffuse.png"
+            @"data\NetworkEngine\textures\tarmac_diffuse.png",
+            @"data\NetworkEngine\textures\grass_diffuse.png",
+            @"data\NetworkEngine\textures\grid.png",
+            @"data\NetworkEngine\textures\grass_green_d.jpg"
         };
 
         public static List<string> NormalMaps = new List<string>()
         {
-            @"data\NetworkEngine\textures\tarmac_normal.png"
+            @"data\NetworkEngine\textures\tarmac_normal.png",
+            @"data\NetworkEngine\textures\grass_normal.png"
         };
 
         public static List<string> SpecularMaps = new List<string>()

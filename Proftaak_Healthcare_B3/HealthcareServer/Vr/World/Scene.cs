@@ -20,7 +20,7 @@ namespace HealthcareServer.Vr.World
         {
             this.nodes = new List<Node>();
             this.routes = new List<Route>();
-            this.skyBox = new SkyBox(10, this.session);
+            this.skyBox = new SkyBox(10, session);
 
             this.session = session;
         }
