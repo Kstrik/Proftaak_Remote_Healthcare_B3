@@ -68,6 +68,11 @@ namespace HealthcareServer.Vr.World
             await this.session.SendAction(GetUpdateJsonObject());
         }
 
+        public async Task Delete()
+        {
+            await this.session.SendAction(GetDeleteJsonObject());
+        }
+
         public async Task FollowRoute(Route route, float speed, Vector3 positionOffset, Vector3 rotateOffset, bool followHeight = false, float offset = 0.0f, float smoothing = 1.0f)
         {
             await this.session.SendAction(GetFollowRouteJsonObject(route, speed, positionOffset, rotateOffset, followHeight, offset, smoothing));
@@ -126,6 +131,18 @@ namespace HealthcareServer.Vr.World
             return this.session.GetTunnelSendRequest(nodeUpdate);
         }
 
+        private JObject GetDeleteJsonObject()
+        {
+            JObject data = new JObject();
+            data.Add("id", this.Id);
+
+            JObject nodeRemove = new JObject();
+            nodeRemove.Add("id", "scene/node/delete");
+            nodeRemove.Add("data", data);
+
+            return this.session.GetTunnelSendRequest(nodeRemove);
+        }
+
         private JObject GetFollowRouteJsonObject(Route route, float speed, Vector3 positionOffset, Vector3 rotateOffset, bool followHeight = false, float offset = 0.0f, float smoothing = 1.0f)
         {
             JObject data = new JObject();
@@ -144,6 +161,18 @@ namespace HealthcareServer.Vr.World
             followRoute.Add("data", data);
 
             return this.session.GetTunnelSendRequest(followRoute);
+        }
+
+        public static JObject GetFindNodeJsonObject(string name, Session session)
+        {
+            JObject data = new JObject();
+            data.Add("name", name);
+
+            JObject findNode = new JObject();
+            findNode.Add("id", "scene/node/find");
+            findNode.Add("data", data);
+
+            return session.GetTunnelSendRequest(findNode);
         }
 
         public async Task<Response> GetResponse(string jsonResponse)

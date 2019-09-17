@@ -25,7 +25,7 @@ namespace Networking.Server
 
         private List<ClientConnection> connections;
 
-        public Server(string ip, int port, IClientDataReceiver receiver, IServerConnector connector, ILogger logger)
+        public Server(string ip, int port, IClientDataReceiver receiver = null, IServerConnector connector = null, ILogger logger = null)
         {
             this.isReady = IPAddress.TryParse(ip, out this.host);
             this.isRunning = false;
@@ -49,11 +49,11 @@ namespace Networking.Server
                         Thread.Sleep(200);
                         continue;
                     }
-                    ClientConnection connection = new ClientConnection(this.listener.AcceptTcpClient(), this.receiver, this.logger, this);
+                    ClientConnection connection = new ClientConnection(this.listener.AcceptTcpClient(), this, this.receiver, this.logger);
                     this.connections.Add(connection);
                     connection.Connect();
-                    this.connector.OnClientConnected(connection);
-                    this.logger.Log($"Client connected on {connection.GetIp()} using port {connection.GetPort()}\n");
+                    this.connector?.OnClientConnected(connection);
+                    this.logger?.Log($"Client connected on {connection.GetIp()} using port {connection.GetPort()}\n");
                 }
             });
         }
@@ -69,17 +69,17 @@ namespace Networking.Server
                 InitilizeListenerThread();
                 this.listenerThread.Start();
 
-                this.logger.Log($"Server started on {this.host} using port {this.port}\n");
+                this.logger?.Log($"Server started on {this.host} using port {this.port}\n");
 
                 return true;
             }
             else if(!this.isReady)
             {
-                this.logger.Log("Server could not be started due to invalid ip!\n");
+                this.logger?.Log("Server could not be started due to invalid ip!\n");
             }
             else
             {
-                this.logger.Log("Server is already running!\n");
+                this.logger?.Log("Server is already running!\n");
             }
             return false;
         }
@@ -92,12 +92,12 @@ namespace Networking.Server
                 foreach (ClientConnection connection in this.connections)
                 {
                     connection.Disconnect();
-                    this.connector.OnClientDisconnected(connection);
+                    this.connector?.OnClientDisconnected(connection);
                 }
                 this.connections.Clear();
 
                 this.listener.Stop();
-                this.logger.Log($"Server stopped on {this.host} using port {this.port}\n");
+                this.logger?.Log($"Server stopped on {this.host} using port {this.port}\n");
             }
         }
 
@@ -106,7 +106,7 @@ namespace Networking.Server
             if(connection != null)
             {
                 this.connections.Remove(connection);
-                this.connector.OnClientDisconnected(connection);
+                this.connector?.OnClientDisconnected(connection);
             }
         }
 

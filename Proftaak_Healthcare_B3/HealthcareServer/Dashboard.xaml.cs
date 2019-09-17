@@ -4,6 +4,7 @@ using HealthcareServer.Vr.World;
 using HealthcareServer.Vr.World.Components;
 using Networking;
 using Networking.Client;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,8 @@ namespace HealthcareServer
 
         private Node currentNode;
 
+        private ComboBox sessionsSelect;
+
         public Dashboard()
         {
             InitializeComponent();
@@ -84,6 +87,7 @@ namespace HealthcareServer
             this.client.Connect();
 
             SetupButtons();
+            GetCurrentSessions();
         }
 
         private void Dashboard_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -463,6 +467,18 @@ namespace HealthcareServer
             WrapPanel wrapPanel = new WrapPanel();
             wrapPanel.Margin = new Thickness(5, 5, 5, 5);
 
+            Button refreshSessionsButton = new Button();
+            refreshSessionsButton.Content = "Refresh sessions";
+            refreshSessionsButton.Foreground = Brushes.White;
+            refreshSessionsButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
+            refreshSessionsButton.BorderBrush = Brushes.Transparent;
+            refreshSessionsButton.Margin = new Thickness(5, 5, 5, 5);
+            refreshSessionsButton.Width = 100;
+            refreshSessionsButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+            {
+                GetCurrentSessions();
+            });
+
             Button startSessionButton = new Button();
             startSessionButton.Content = "Start session";
             startSessionButton.Foreground = Brushes.White;
@@ -472,12 +488,24 @@ namespace HealthcareServer
             startSessionButton.Width = 100;
             startSessionButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
             {
-                string host = ((wrapPanel.Children[0] as StackPanel).Children[1] as TextBox).Text;
+                //string host = ((wrapPanel.Children[0] as StackPanel).Children[1] as TextBox).Text;
+                string host = ((wrapPanel.Children[0] as StackPanel).Children[1] as ComboBox).SelectedItem.ToString();
                 Task.Run(() => Initialize(host));
+                refreshSessionsButton.Visibility = Visibility.Collapsed;
             });
 
-            wrapPanel.Children.Add(GetInputField("Session host:", "DESKTOP-KENLEY", false));
+            Label lblSessions = new Label();
+            lblSessions.Content = "Session host:";
+            lblSessions.Foreground = Brushes.White;
+            this.sessionsSelect = new ComboBox();
+            StackPanel stkSesions = new StackPanel();
+            stkSesions.Children.Add(lblSessions);
+            stkSesions.Children.Add(this.sessionsSelect);
+
+            //wrapPanel.Children.Add(GetInputField("Session host:", "DESKTOP-KENLEY", false));
+            wrapPanel.Children.Add(stkSesions);
             wrapPanel.Children.Add(startSessionButton);
+            wrapPanel.Children.Add(refreshSessionsButton);
 
             Button setTimeButton = new Button();
             setTimeButton.Content = "Set time";
@@ -491,10 +519,22 @@ namespace HealthcareServer
                 Task.Run(() => this.session.GetScene().GetSkyBox().SetTime(time));
             });
 
+            Button deleteGroundPLaneButton = new Button();
+            deleteGroundPLaneButton.Content = "Remove ground plane";
+            deleteGroundPLaneButton.Foreground = Brushes.White;
+            deleteGroundPLaneButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236"));
+            deleteGroundPLaneButton.BorderBrush = Brushes.Transparent;
+            deleteGroundPLaneButton.Margin = new Thickness(5, 5, 5, 5);
+            deleteGroundPLaneButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
+            {
+                Task.Run(() => RemoveGroundPlane());
+            });
+
             this.propertiesContainer.GetContentPanel().Children.Add(resetSceneButton);
             this.propertiesContainer.GetContentPanel().Children.Add(wrapPanel);
             this.propertiesContainer.GetContentPanel().Children.Add(GetInputField("Time:", "12", true));
             this.propertiesContainer.GetContentPanel().Children.Add(setTimeButton);
+            this.propertiesContainer.GetContentPanel().Children.Add(deleteGroundPLaneButton);
         }
 
         private StackPanel GetInputField(string header, string text, bool isNumber)
@@ -551,7 +591,14 @@ namespace HealthcareServer
 
         public void OnDataReceived(byte[] data)
         {
-            this.session.OnDataReceived(data);
+            if(this.session != null)
+            {
+                this.session.OnDataReceived(data);
+            }
+            else
+            {
+                HandleRecieve(JObject.Parse(Encoding.UTF8.GetString(data)));
+            }
         }
 
         public void Log(string text)
@@ -561,6 +608,36 @@ namespace HealthcareServer
                 this.logField.Text += text;
                 this.logField.ScrollToEnd();
             }));
+        }
+
+        private void HandleRecieve(JObject jsonData)
+        {
+            if(jsonData.GetValue("id").ToString() == "session/list")
+            {
+                List<string> sessions = new List<string>();
+                foreach (JObject session in jsonData.GetValue("data").ToObject<JToken>().Children())
+                {
+                    JObject clientInfo = session.GetValue("clientinfo").ToObject<JObject>();
+
+                    sessions.Add(clientInfo.GetValue("host").ToString());
+                }
+
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    this.sessionsSelect.ItemsSource = sessions;
+                }));
+            }
+        }
+
+        private void GetCurrentSessions()
+        {
+            this.client.Transmit(Encoding.UTF8.GetBytes(Session.GetSessionsListRequest().ToString()));
+        }
+
+        private async Task RemoveGroundPlane()
+        {
+            Node node = await this.session.GetScene().FindNode("GroundPlane");
+            await node.Delete();
         }
     }
 }

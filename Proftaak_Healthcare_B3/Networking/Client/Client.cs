@@ -23,7 +23,7 @@ namespace Networking.Client
 
         private Thread listenerThread;
 
-        public Client(string ip, int port, IServerDataReceiver receiver, ILogger logger)
+        public Client(string ip, int port, IServerDataReceiver receiver = null, ILogger logger = null)
         {
             this.isReady = IPAddress.TryParse(ip, out host);
             this.isConnected = false;
@@ -43,7 +43,7 @@ namespace Networking.Client
                     if (bytes.Length == 0)
                         Disconnect();
                     else
-                        this.receiver.OnDataReceived(bytes);
+                        this.receiver?.OnDataReceived(bytes);
                 }
             });
         }
@@ -59,16 +59,16 @@ namespace Networking.Client
                 InitilizeListenerThread();
                 this.listenerThread.Start();
 
-                this.logger.Log($"Client connected to {this.host} on port {this.port}\n");
+                this.logger?.Log($"Client connected to {this.host} on port {this.port}\n");
                 return true;
             }
             else if (!this.isReady)
             {
-                this.logger.Log("Client could not connect due to invalid ip!\n");
+                this.logger?.Log("Client could not connect due to invalid ip!\n");
             }
             else
             {
-                this.logger.Log("Client is already connected!\n");
+                this.logger?.Log("Client is already connected!\n");
             }
             return false;
         }
@@ -80,13 +80,12 @@ namespace Networking.Client
                 this.isConnected = false;
                 this.client.Close();
                 this.stream.Close();
-                this.logger.Log($"Client disconnected on {this.host} using port {this.port}\n");
+                this.logger?.Log($"Client disconnected on {this.host} using port {this.port}\n");
             }
         }
 
         public void Transmit(byte[] data)
         {
-            string test = Encoding.UTF8.GetString(data);
             if(data != null && this.isConnected)
             {
                 byte[] sizeinfo = new byte[4];
@@ -133,9 +132,12 @@ namespace Networking.Client
                     totalread += currentread;
                 }
 
-                string responseData = Encoding.UTF8.GetString(buffer, 0, totalread);
-                if (responseData.Length != 0)
-                    this.logger.Log($"Received: {responseData}\n");
+                if(this.logger != null)
+                {
+                    string responseData = Encoding.UTF8.GetString(buffer, 0, totalread);
+                    if (responseData.Length != 0)
+                        this.logger.Log($"Received: {responseData}\n");
+                }
 
                 return buffer;
             }

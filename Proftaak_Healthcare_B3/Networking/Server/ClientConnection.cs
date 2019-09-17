@@ -21,7 +21,7 @@ namespace Networking.Server
 
         private Server server;
 
-        public ClientConnection(TcpClient client, IClientDataReceiver receiver, ILogger logger, Server server)
+        public ClientConnection(TcpClient client, Server server, IClientDataReceiver receiver = null, ILogger logger = null)
         {
             this.isConnected = false;
 
@@ -49,7 +49,7 @@ namespace Networking.Server
                         this.server.DiconnectClient(this);
                     }
                     else
-                        this.receiver.OnDataReceived(bytes, this.Id);
+                        this.receiver?.OnDataReceived(bytes, this.Id);
                 }
             });
         }
@@ -69,10 +69,9 @@ namespace Networking.Server
             if (this.isConnected)
             {
                 this.isConnected = false;
-                this.logger.Log($"Client disconnected on {GetIp()} using port {GetPort()}\n");
+                this.logger?.Log($"Client disconnected on {GetIp()} using port {GetPort()}\n");
                 this.client.Close();
                 this.stream.Close();
-                //this.server.DiconnectClient(this);
             }
         }
 
@@ -124,9 +123,12 @@ namespace Networking.Server
                     totalread += currentread;
                 }
 
-                string responseData = Encoding.UTF8.GetString(buffer, 0, totalread);
-                if (responseData.Length != 0)
-                    this.logger.Log($"Received: {responseData}\n");
+                if(this.logger != null)
+                {
+                    string responseData = Encoding.UTF8.GetString(buffer, 0, totalread);
+                    if (responseData.Length != 0)
+                        this.logger.Log($"Received: {responseData}\n");
+                }
 
                 return buffer;
             }
