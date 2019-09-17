@@ -47,9 +47,17 @@ namespace HealthcareServer
 
         private TextBox logField;
 
+        private Dictionary<TreeViewItem, Node> nodeTree;
+        private Dictionary<TreeViewItem, Route> routeTree;
+
+        private Node currentNode;
+
         public Dashboard()
         {
             InitializeComponent();
+
+            this.nodeTree = new Dictionary<TreeViewItem, Node>();
+            this.routeTree = new Dictionary<TreeViewItem, Route>();
 
             this.sidemenuWindow = new SidemenuWindow(new Sidemenu(250, 50, 400, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236")),
                                                         new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
@@ -284,6 +292,19 @@ namespace HealthcareServer
                     }
                     //---------------------------------------------------
 
+                    TreeViewItem treeViewItem = new TreeViewItem();
+                    treeViewItem.Header = name;
+                    treeViewItem.Foreground = Brushes.White;
+                    treeViewItem.MouseDoubleClick += new MouseButtonEventHandler((object s, MouseButtonEventArgs args) =>
+                    {
+                        Node sceneNode;
+                        this.nodeTree.TryGetValue(treeViewItem, out sceneNode);
+
+                        this.currentNode = sceneNode;
+                    });
+
+                    this.nodes.Items.Add(treeViewItem);
+                    this.nodeTree.Add(treeViewItem, node);
                     Task.Run(() => this.session.GetScene().AddNode(node));
                 }
             });
@@ -393,6 +414,20 @@ namespace HealthcareServer
                 }
                 //--------------------------------------------------
 
+                TreeViewItem treeViewItem = new TreeViewItem();
+                treeViewItem.Header = "Route";
+                treeViewItem.Foreground = Brushes.White;
+                treeViewItem.MouseDoubleClick += new MouseButtonEventHandler((object s, MouseButtonEventArgs args) =>
+                {
+                    Route sceneRoute;
+                    this.routeTree.TryGetValue(treeViewItem, out sceneRoute);
+
+                    if (this.currentNode != null)
+                        Task.Run(() => this.currentNode.FollowRoute(sceneRoute, 2.0f, new Vector3(0,0,0), new Vector3(0,0,0)));
+                });
+
+                this.routes.Items.Add(treeViewItem);
+                this.routeTree.Add(treeViewItem, route);
                 Task.Run(() => this.session.GetScene().AddRoute(route));
             });
 
@@ -417,6 +452,11 @@ namespace HealthcareServer
             resetSceneButton.Margin = new Thickness(5, 5, 5, 5);
             resetSceneButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
             {
+                this.nodeTree.Clear();
+                this.routeTree.Clear();
+                this.currentNode = null;
+                this.nodes.Items.Clear();
+                this.routes.Items.Clear();
                 Task.Run(() => this.session.GetScene().Reset());
             });
 
@@ -436,7 +476,7 @@ namespace HealthcareServer
                 Task.Run(() => Initialize(host));
             });
 
-            wrapPanel.Children.Add(GetInputField("Session host:", "", false));
+            wrapPanel.Children.Add(GetInputField("Session host:", "DESKTOP-KENLEY", false));
             wrapPanel.Children.Add(startSessionButton);
 
             Button setTimeButton = new Button();
