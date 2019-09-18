@@ -1,0 +1,17 @@
+﻿<Window x:Class="HealthCareServer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HealthCareServer"
+        mc:Ignorable="d"
+        Title="HealthCare" Height="720" Width="1280" Visibility="Visible" WindowStyle="None" AllowsTransparency="True">
+    <Grid Background="#FF383434">
+        <Grid Background="#FF4C4743" VerticalAlignment="Top" Width="1280" Height="50">
+            <Label>
+                
+            </Label>
+        </Grid>
+        <local:HamburgerMenu HorizontalAlignment="Left" Margin="-250, 0, 0, 0"></local:HamburgerMenu>
+    </Grid>
+</Window>

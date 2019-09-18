@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="HealthCareServer.HamburgerMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HealthCareServer"
+             mc:Ignorable="d" 
+             d:DesignHeight="720" d:DesignWidth="300">
+    <Grid Background="#FF383434" Name="grid">
+        <WrapPanel Width="300">
+            <StackPanel Name="menuContent" Background="#FF4C4743" Width="250" HorizontalAlignment="Left">
+                
+            </StackPanel>
+            <StackPanel Background="#FF383430" Width="50" HorizontalAlignment="Right" Height="720">
+                <Canvas MouseDown="Menu_MouseDown">
+                    <Label Content="&#9776;" Foreground="White" FontSize="30" Margin="6,0,0,0"></Label>
+                </Canvas>
+            </StackPanel>
+        </WrapPanel>
+    </Grid>
+</UserControl>
