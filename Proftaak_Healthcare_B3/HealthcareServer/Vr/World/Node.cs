@@ -23,12 +23,15 @@ namespace HealthcareServer.Vr.World
         private Terrain terrain;
         private Panel panel;
 
-        public Node(string name, Session session, string parentId = "")
+        public Node(string name, Session session, string parentId)
         {
             this.Name = name;
             this.ParentId = parentId;
             this.session = session;
         }
+
+        public Node(string name, Session session)
+            : this(name, session, "") { }
 
         public void SetTransform(Transform transform)
         {

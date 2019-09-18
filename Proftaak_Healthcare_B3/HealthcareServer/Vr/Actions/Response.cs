@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace HealthcareServer.Vr.Actions
 {
+    /// <summary>
+    /// Represents response from the VR engine
+    /// </summary>
     public class Response
     {
         public enum ResponseStatus

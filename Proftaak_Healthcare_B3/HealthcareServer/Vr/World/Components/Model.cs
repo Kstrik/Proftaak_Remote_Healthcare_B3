@@ -14,13 +14,16 @@ namespace HealthcareServer.Vr.World.Components
         public bool Animated { get; }
         public string AnimationName { get; }
 
-        public Model(string filename, bool cullbackFaces, string animationName = "")
+        public Model(string filename, bool cullbackFaces, string animationName)
         {
             this.Filename = filename;
             this.CullbackFaces = cullbackFaces;
             this.AnimationName = animationName;
             this.Animated = (String.IsNullOrEmpty(animationName)) ? false : true;
         }
+
+        public Model(string filename, bool cullbackFaces)
+            : this(filename, cullbackFaces, "") { }
 
         public JObject GetJsonObject()
         {
