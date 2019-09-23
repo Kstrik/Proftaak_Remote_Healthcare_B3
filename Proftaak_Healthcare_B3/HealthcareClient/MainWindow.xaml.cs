@@ -19,20 +19,36 @@ using Networking.Client;
 using Networking.Server;
 using Networking.VrServer;
 using Newtonsoft.Json.Linq;
+using UIControls;
+using UIControls.Menu;
 
 namespace HealthcareClient
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
+    public partial class MainWindow : Window, IServerDataReceiver {
 
         private Client client;
         private Session session;
-        private List<string> sessies; 
+        private List<string> sessies;
+        private SidemenuWindow sidemenuWindow;
         public MainWindow()
         {
             InitializeComponent();
+            sidemenuWindow = new SidemenuWindow(new Sidemenu(250, 50, 400, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236")),
+                                                        new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
+                                                        new SolidColorBrush((Color)ColorConverter.ConvertFromString("#007acc")),
+                                                        new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"))));
+            mainGrid.Children.Add(sidemenuWindow);
+            Grid grid = vrGrid;
+            mainGrid.Children.Remove(vrGrid);
+            sidemenuWindow.GetContentPanel().Children.Add(grid);
+            sidemenuWindow.Sidemenu.Menu.AddItem("Session", 250, 60);
+            sidemenuWindow.Sidemenu.Menu.AddItem("Charts", 250, 60);
+            this.client = new Client("145.48.6.10", 6666, this, null);
+            this.client.Connect();
+            GetCurrentSessions();
         }
 
         private async Task Initialize(string sessionHost)
@@ -43,11 +59,9 @@ namespace HealthcareClient
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (sessies.Equals(Environment.MachineName))
-            {
-                string host = Environment.MachineName;
-                Task.Run(() => Initialize(host));
-            }
+            string host = sessionBox.SelectedItem.ToString();
+            Task.Run(() => Initialize(host));
+            lblConnected.Content = "Verbonden";
         }
 
         private StackPanel GetInputField(string header, string text, bool isNumber)
@@ -128,7 +142,7 @@ namespace HealthcareClient
 
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 {
-                    this.sessies = sessions;
+                    this.sessionBox.ItemsSource = sessions;
                 }));
             }
         }

@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -59,6 +60,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Vr\Actions\ActionRequest.cs" />
+    <Compile Include="Vr\Actions\IResponseValidator.cs" />
+    <Compile Include="Vr\Actions\Response.cs" />
+    <Compile Include="Vr\Assets.cs" />
+    <Compile Include="Vr\Session.cs" />
+    <Compile Include="Vr\Tunnel.cs" />
+    <Compile Include="Vr\VectorMath\Vector2.cs" />
+    <Compile Include="Vr\VectorMath\Vector3.cs" />
+    <Compile Include="Vr\VectorMath\Vector4.cs" />
+    <Compile Include="Vr\World\Components\Model.cs" />
+    <Compile Include="Vr\World\Components\Panel.cs" />
+    <Compile Include="Vr\World\Components\Road.cs" />
+    <Compile Include="Vr\World\Components\Terrain.cs" />
+    <Compile Include="Vr\World\Components\Transform.cs" />
+    <Compile Include="Vr\World\Node.cs" />
+    <Compile Include="Vr\World\Route.cs" />
+    <Compile Include="Vr\World\Scene.cs" />
+    <Compile Include="Vr\World\SkyBox.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -99,13 +118,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HealthcareServer\HealthcareServer.csproj">
-      <Project>{5f38177e-6e58-4f95-8b9a-046b6d6ec1aa}</Project>
-      <Name>HealthcareServer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Networking\Networking.csproj">
       <Project>{a68611bb-92f9-4e03-b042-05ca9881a624}</Project>
       <Name>Networking</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UIControls\UIControls.csproj">
+      <Project>{26c1d311-4195-41c6-87b0-f96de976452d}</Project>
+      <Name>UIControls</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
