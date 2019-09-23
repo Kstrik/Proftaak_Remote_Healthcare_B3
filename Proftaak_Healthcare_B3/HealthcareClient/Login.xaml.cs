@@ -23,5 +23,13 @@ namespace HealthcareClient
         {
             InitializeComponent();
         }
+
+        private void BtnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            //Hier moet dus al een bericht gestuurd worden naar de server op de manier van ons protocol(naam en BSN)
+            ClientWindow clientWindow = new ClientWindow();
+            clientWindow.Show();
+            this.Close();
+        }
     }
 }

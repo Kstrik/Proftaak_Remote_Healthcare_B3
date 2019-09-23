@@ -27,22 +27,15 @@ using UIControls.Menu;
 namespace HealthcareClient
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ClientWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IServerDataReceiver {
+    public partial class ClientWindow : Window, IServerDataReceiver {
 
         private Client client;
         private Session session;
-        private List<string> sessies;
-        private SidemenuWindow sidemenuWindow;
-        private Grid gridSession;
-        public MainWindow()
+        public ClientWindow()
         {
             InitializeComponent();
-            sidemenuWindow = new SidemenuWindow(new Sidemenu(250, 50, 400, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#323236")),
-                                                        new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
-                                                        new SolidColorBrush((Color)ColorConverter.ConvertFromString("#007acc")),
-                                                        new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"))));
             this.client = new Client("145.48.6.10", 6666, this, null);
             this.client.Connect();
             GetCurrentSessions();
