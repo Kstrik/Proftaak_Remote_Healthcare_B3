@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthcareServer", "Healthc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIControls", "UIControls\UIControls.csproj", "{26C1D311-4195-41C6-87B0-F96DE976452D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthcareClient", "HealthcareClient\HealthcareClient.csproj", "{C84020DB-59FE-44B0-B307-9C5DD3444143}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{26C1D311-4195-41C6-87B0-F96DE976452D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26C1D311-4195-41C6-87B0-F96DE976452D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26C1D311-4195-41C6-87B0-F96DE976452D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C84020DB-59FE-44B0-B307-9C5DD3444143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C84020DB-59FE-44B0-B307-9C5DD3444143}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C84020DB-59FE-44B0-B307-9C5DD3444143}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C84020DB-59FE-44B0-B307-9C5DD3444143}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
