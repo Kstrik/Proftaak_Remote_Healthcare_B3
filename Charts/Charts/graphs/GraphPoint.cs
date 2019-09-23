@@ -25,6 +25,7 @@ namespace Charts
 
         private Canvas canvas;
 
+        private Rectangle rectangle;
         private Label label;
 
         public GraphPoint(System.Windows.Point position, object value, double radius, ref Canvas canvas)
@@ -42,13 +43,27 @@ namespace Charts
             this.ellipse.Fill = Brushes.White;
             canvas.Children.Add(this.ellipse);
 
+            this.rectangle = new Rectangle();
+            this.rectangle.Fill = Brushes.White;
+            this.rectangle.RadiusX = 5;
+            this.rectangle.RadiusY = 5;
+            this.rectangle.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            this.rectangle.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            this.rectangle.Visibility = System.Windows.Visibility.Hidden;
+            this.canvas.Children.Add(this.rectangle);
+
             this.label = new Label();
             this.label.HorizontalContentAlignment = System.Windows.HorizontalAlignment.Left;
             this.label.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-            this.label.Margin = new System.Windows.Thickness(position.X + 50, position.Y + 50, 0, 0);
             this.label.Content = value;
-            this.label.FontSize = 20;
-            this.label.Foreground = Brushes.White;
+            this.label.FontSize = 15;
+            this.label.Visibility = System.Windows.Visibility.Hidden;
+            this.canvas.Children.Add(this.label);
+            this.label.Margin = new System.Windows.Thickness(position.X - (this.label.ActualWidth / 2), position.Y - this.label.ActualHeight, 0, 0);
+
+            this.rectangle.Width = this.label.ActualWidth;
+            this.rectangle.Height = this.label.ActualHeight;
+            this.rectangle.Margin = new System.Windows.Thickness(position.X - (this.label.ActualWidth / 2), position.Y - this.label.ActualHeight, 0, 0);
         }
 
         public GraphPoint(System.Windows.Point position, object value, ref Canvas canvas)
@@ -82,19 +97,23 @@ namespace Charts
         {
             this.ellipse.Width = (this.radius * 2) + (this.radius / 4);
             this.ellipse.Height = (this.radius * 2) + (this.radius / 4);
-            this.ellipse.Margin = new System.Windows.Thickness((position.X - this.radius) - (this.radius / 8), (position.Y - this.radius) - (this.radius / 8), 0, 0);
+            this.ellipse.Margin = new System.Windows.Thickness((this.position.X - this.radius) - (this.radius / 8), (this.position.Y - this.radius) - (this.radius / 8), 0, 0);
 
-            if(!this.canvas.Children.Contains(this.label))
-                this.canvas.Children.Add(this.label);
+            //if (!this.canvas.Children.Contains(this.label))
+            //    this.canvas.Children.Add(this.label);
+            this.rectangle.Visibility = System.Windows.Visibility.Visible;
+            this.label.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void OnMouseLeave()
         {
             this.ellipse.Width = (this.radius * 2);
             this.ellipse.Height = (this.radius * 2);
-            this.ellipse.Margin = new System.Windows.Thickness(position.X - this.radius, position.Y - this.radius, 0, 0);
+            this.ellipse.Margin = new System.Windows.Thickness(this.position.X - this.radius, this.position.Y - this.radius, 0, 0);
 
-            this.canvas.Children.Remove(this.label);
+            //this.canvas.Children.Remove(this.label);
+            this.rectangle.Visibility = System.Windows.Visibility.Hidden;
+            this.label.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private void SetPosition(System.Windows.Point position)
@@ -106,7 +125,10 @@ namespace Charts
             else
                 this.ellipse.Margin = new System.Windows.Thickness(position.X - this.radius, position.Y - this.radius, 0, 0);
 
-            this.label.Margin = new System.Windows.Thickness(position.X, (position.Y - this.radius * 2), 0, 0);
+            this.rectangle.Width = this.label.ActualWidth;
+            this.rectangle.Height = this.label.ActualHeight;
+            this.label.Margin = new System.Windows.Thickness(position.X - (this.label.ActualWidth / 2), position.Y - this.label.ActualHeight, 0, 0);
+            this.rectangle.Margin = new System.Windows.Thickness(position.X - (this.label.ActualWidth / 2), position.Y - this.label.ActualHeight, 0, 0);
         }
     }
 }

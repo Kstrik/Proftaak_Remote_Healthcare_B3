@@ -38,7 +38,7 @@ namespace ChartsApp
             this.timer = new Timer(1000);
             this.timer.Elapsed += Timer_Elapsed;
 
-            this.liveChart = new LiveChart("Livechart", "ChartXAxis", "ChartYAxis", 40, 400, 200, 50, LiveChart.BlueGreenTheme, cnv_Main, false, true, true, true, true, true, true);
+            this.liveChart = new LiveChart("Livechart", "ChartXAxis", "ChartYAxis", 40, 400, 200, 20, LiveChart.BlueGreenTheme, cnv_Main, false, true, true, true, true, true, true);
             this.MouseMove += MainWindow_MouseMove;
 
             this.timer.Start();

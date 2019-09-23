@@ -145,8 +145,11 @@ namespace Charts
             {
                 this.data.RemoveAt(0);
 
-                this.graphPoints[0].Remove();
-                this.graphPoints.RemoveAt(0);
+                if (this.showGraphPoints)
+                {
+                    this.graphPoints[0].Remove();
+                    this.graphPoints.RemoveAt(0);
+                }
             }
 
             this.greatestValue = this.data.Max();
@@ -154,10 +157,11 @@ namespace Charts
             if (this.showGraphPoints)
             {
                 double lengthOfStepX = this.width / this.stepsX;
+                lengthOfStepX += lengthOfStepX / this.stepsX;
                 Point point = new Point();
                 point.X = lengthOfStepX * (this.data.Count - 1) + this.spacing;
                 point.Y = this.height + this.spacing - (this.height / this.greatestValue * data);
-                GraphPoint graphPoint = new GraphPoint(point, data, 5, ref this.canvas);
+                GraphPoint graphPoint = new GraphPoint(point, data, 3, ref this.canvas);
                 this.graphPoints.Add(graphPoint);
             }
 
@@ -170,6 +174,7 @@ namespace Charts
         {
             PointCollection points = new PointCollection();
             double lengthOfStepX = this.width / this.stepsX;
+            lengthOfStepX += lengthOfStepX / this.stepsX;
 
             for (int i = 0; i < this.data.Count; i++)
             {
@@ -182,7 +187,7 @@ namespace Charts
                     this.graphPoints[i].Position = point;
             }
 
-            points.Add(new Point((this.width / this.stepsX * (this.data.Count - 1)) + this.spacing, this.height + this.spacing));
+            points.Add(new Point(((this.width / this.stepsX + lengthOfStepX / this.stepsX) * (this.data.Count - 1)) + this.spacing, this.height + this.spacing));
             points.Add(new Point(this.spacing, this.height + this.spacing));
 
             return points;
@@ -320,5 +325,10 @@ namespace Charts
                                                                         new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2D2D30")),
                                                                         Brushes.Transparent);
 
+        public static ColorTheme BlueRedTheme = new ColorTheme(new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC")),
+                                                                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFB93838")),
+                                                                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC")),
+                                                                new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2D2D30")),
+                                                                Brushes.Transparent);
     }
 }
