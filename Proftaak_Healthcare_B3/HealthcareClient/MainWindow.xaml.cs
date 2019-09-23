@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using HealthcareServer.Vr;
 using HealthcareServer.Vr.World;
+using Microsoft.Win32;
 using Networking.Client;
 using Networking.Server;
 using Networking.VrServer;
@@ -33,6 +35,7 @@ namespace HealthcareClient
         private Session session;
         private List<string> sessies;
         private SidemenuWindow sidemenuWindow;
+        private Grid gridSession;
         public MainWindow()
         {
             InitializeComponent();
@@ -40,12 +43,6 @@ namespace HealthcareClient
                                                         new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF")),
                                                         new SolidColorBrush((Color)ColorConverter.ConvertFromString("#007acc")),
                                                         new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFFFF"))));
-            mainGrid.Children.Add(sidemenuWindow);
-            Grid grid = vrGrid;
-            mainGrid.Children.Remove(vrGrid);
-            sidemenuWindow.GetContentPanel().Children.Add(grid);
-            sidemenuWindow.Sidemenu.Menu.AddItem("Session", 250, 60);
-            sidemenuWindow.Sidemenu.Menu.AddItem("Charts", 250, 60);
             this.client = new Client("145.48.6.10", 6666, this, null);
             this.client.Connect();
             GetCurrentSessions();
@@ -156,6 +153,22 @@ namespace HealthcareClient
         {
             Node node = await this.session.GetScene().FindNode("GroundPlane");
             await node.Delete();
+        }
+
+        private void BtnScene_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text files (*.Scene)|*.Scene";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string sceneInput = File.ReadAllText(openFileDialog.FileName);
+                lblScene.Content = openFileDialog.FileName;
+            }
+        }
+
+        private void BtnStart_Click(object sender, RoutedEventArgs e)
+        {
+           Task.Run(()=> session.Create());
         }
     }
 }
