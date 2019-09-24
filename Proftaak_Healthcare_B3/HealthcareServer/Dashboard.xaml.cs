@@ -276,7 +276,7 @@ namespace HealthcareServer
 
                     //---------------------- Model ----------------------
                     //string modelFile = ((addNodePanel.Children[2] as StackPanel).Children[1] as TextBox).Text;
-                    string modelFile = modelComboBox.SelectedItem.ToString();
+                    string modelFile = modelComboBox.SelectedItem?.ToString();
                     if (!String.IsNullOrEmpty(modelFile))
                     {
                         Model model = new Model(modelFile, false);
@@ -294,6 +294,11 @@ namespace HealthcareServer
                         Terrain nodeTerrain = new Terrain(width, depth, maxHeight, heightMapFile, (smoothNormals.IsChecked == true) ? true : false, this.session);
                         node.SetTerrain(nodeTerrain);
                     }
+                    //-----------------------------------------------------
+
+                    //---------------------- Panel ----------------------
+                    Vr.World.Components.Panel panel = new Vr.World.Components.Panel(new Vector2(1, 1), new Vector2(500, 500), new Vector4(1, 1, 1, 1), true, this.session);
+                    node.SetPanel(panel);
                     //---------------------------------------------------
 
                     TreeViewItem treeViewItem = new TreeViewItem();
@@ -515,8 +520,33 @@ namespace HealthcareServer
             setTimeButton.Margin = new Thickness(5, 5, 5, 5);
             setTimeButton.Click += new RoutedEventHandler((object sender, RoutedEventArgs e) =>
             {
-                int time = int.Parse(((this.propertiesContainer.GetContentPanel().Children[2] as StackPanel).Children[1] as TextBox).Text);
-                Task.Run(() => this.session.GetScene().GetSkyBox().SetTime(time));
+                //List<PanelLine> lines = new List<PanelLine>();
+                //lines.Add(new PanelLine(new Vector2(10, 10), new Vector2(10, 100), new Vector4(0, 0, 0, 1)));
+                //lines.Add(new PanelLine(new Vector2(10, 100), new Vector2(100, 100), new Vector4(0, 0, 0, 1)));
+                //Task.Run(async () => await this.currentNode.GetPanel().DrawLines(1, lines));
+
+                //Task.Run(async () => await this.currentNode.GetPanel().DrawText("Test", new Vector2(10, 10), 20, new Vector4(0, 0, 0, 1), "segoeui"));
+
+
+                //Task.Run(async () =>
+                //{
+                //    await this.currentNode.GetPanel().SetClearColor(new Vector4(0, 0, 1, 1));
+                //    await this.currentNode.GetPanel().Swap();
+                //    await this.currentNode.GetPanel().DrawText("Test2", new Vector2(10, 10), 20, new Vector4(0, 0, 0, 1), "segoeui");
+                //    await Task.Delay(5000);
+                //    await this.currentNode.GetPanel().Swap();
+                //    await Task.Delay(5000);
+                //    await this.currentNode.GetPanel().Swap();
+                //});
+
+                Task.Run(async () =>
+                {
+                    await this.currentNode.GetTerrain().AddTextureLayer(@"data\NetworkEngine\textures\terrain\savanna_green_d.jpg", @"data\NetworkEngine\textures\terrain\savanna_green_n.jpg", 0, 25, 1);
+                    await this.currentNode.GetTerrain().AddTextureLayer(@"data\NetworkEngine\textures\terrain\snow_bumpy_d.jpg", @"data\NetworkEngine\textures\terrain\snow_bumpy_n.jpg", 25, 50, 1);
+                });
+
+                //int time = int.Parse(((this.propertiesContainer.GetContentPanel().Children[2] as StackPanel).Children[1] as TextBox).Text);
+                //Task.Run(() => this.session.GetScene().GetSkyBox().SetTime(time));
             });
 
             Button deleteGroundPLaneButton = new Button();

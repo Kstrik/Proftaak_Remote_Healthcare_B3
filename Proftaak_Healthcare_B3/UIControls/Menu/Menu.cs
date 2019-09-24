@@ -43,11 +43,14 @@ namespace UIControls.Menu
             this.stackPanel.Height = this.height;
         }
 
-        public void AddItem(string header, int width, int height)
+        public void AddItem(string header, int width, int height, MenuItem.ItemClickEvent eventHandler)
         {
             MenuItem menuItem = new MenuItem(header, width, height, this.backgroundColor, this.foregroundColor, this.hoverBackgroundColor, this.hoverForegroundColor, this);
             this.menuItems.Add(menuItem);
             this.stackPanel.Children.Add(menuItem.GetUIComponents());
+
+            if (eventHandler != null)
+                menuItem.OnClick += eventHandler;
         }
 
         public void RemoveItem(string header)

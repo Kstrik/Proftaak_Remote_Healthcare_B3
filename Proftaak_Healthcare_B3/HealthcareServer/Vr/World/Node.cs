@@ -33,30 +33,6 @@ namespace HealthcareServer.Vr.World
         public Node(string name, Session session)
             : this(name, session, "") { }
 
-        public void SetTransform(Transform transform)
-        {
-            if (transform != null)
-                this.transform = transform;
-        }
-
-        public void SetModel(Model model)
-        {
-            if (model != null)
-                this.model = model;
-        }
-
-        public void SetTerrain(Terrain terrain)
-        {
-            if (terrain != null)
-                this.terrain = terrain;
-        }
-
-        public void SetPanel(Panel panel)
-        {
-            if (panel != null)
-                this.panel = panel;
-        }
-
         public async Task Add()
         {
             if(this.terrain != null)
@@ -64,6 +40,14 @@ namespace HealthcareServer.Vr.World
 
             Response response = await this.session.SendAction(GetAddJsonObject(), new ActionRequest("tunnel/send", "scene/node/add", this));
             this.Id = (response.Status == Response.ResponseStatus.SUCCES) ? (string)response.Value : "";
+
+            if (!String.IsNullOrEmpty(this.Id))
+            {
+                if(this.panel != null)
+                    this.panel.NodeId = this.Id;
+                if (this.terrain != null)
+                    this.terrain.NodeId = this.Id;
+            }
         }
 
         public async Task Update()
@@ -95,6 +79,16 @@ namespace HealthcareServer.Vr.World
 
                 components.Add("terrain", jsonTerrain);
             }
+            if (this.panel != null)
+            {
+                JObject jsonPanel = new JObject();
+                jsonPanel.Add("size", this.panel.Size.GetJsonObject());
+                jsonPanel.Add("resolution", this.panel.Resolution.GetJsonObject());
+                jsonPanel.Add("background", this.panel.Background.GetJsonObject());
+                jsonPanel.Add("castShadow", this.panel.CastShadow);
+
+                components.Add("panel", jsonPanel);
+            }
 
             JObject data = new JObject();
             data.Add("name", this.Name);
@@ -125,6 +119,16 @@ namespace HealthcareServer.Vr.World
                 jsonTerrain.Add("smoothnormals", this.terrain.SmoothNormals);
 
                 data.Add("terrain", jsonTerrain);
+            }
+            if (this.panel != null)
+            {
+                JObject jsonPanel = new JObject();
+                jsonPanel.Add("size", this.panel.Size.GetJsonObject());
+                jsonPanel.Add("resolution", this.panel.Resolution.GetJsonObject());
+                jsonPanel.Add("background", this.panel.Background.GetJsonObject());
+                jsonPanel.Add("castShadow", this.panel.CastShadow);
+
+                data.Add("panel", jsonPanel);
             }
 
             JObject nodeUpdate = new JObject();
@@ -196,6 +200,53 @@ namespace HealthcareServer.Vr.World
             });
 
             return new Response((!String.IsNullOrEmpty(nodeId) && status.ToLower() == "ok") ? Response.ResponseStatus.SUCCES : Response.ResponseStatus.ERROR, nodeId);
+        }
+
+        public void SetTransform(Transform transform)
+        {
+            if (transform != null)
+                this.transform = transform;
+        }
+
+        public void SetModel(Model model)
+        {
+            if (model != null)
+                this.model = model;
+        }
+
+        public void SetTerrain(Terrain terrain)
+        {
+            if (terrain != null)
+                this.terrain = terrain;
+        }
+
+        public void SetPanel(Panel panel)
+        {
+            if (panel != null)
+            {
+                this.panel = panel;
+                this.panel.NodeId = this.Id;
+            }
+        }
+
+        public Transform GetTransform()
+        {
+            return this.transform;
+        }
+
+        public Model GetModel()
+        {
+            return this.model;
+        }
+
+        public Terrain GetTerrain()
+        {
+            return this.terrain;
+        }
+
+        public Panel GetPanel()
+        {
+            return this.panel;
         }
     }
 }

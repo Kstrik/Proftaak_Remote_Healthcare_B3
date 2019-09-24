@@ -17,6 +17,7 @@ namespace HealthcareServer.Vr.World.Components
         private Bitmap bitmap;
         private int[] heights;
 
+        public string NodeId { get; set; }
         public int Width { get; }
         public int Depth { get; }
         public int MaxHeight { get; set; }
@@ -101,6 +102,18 @@ namespace HealthcareServer.Vr.World.Components
         public async Task Delete()
         {
             await this.session.SendAction(GetDeleteJsonObject());
+        }
+
+        public async Task AddTextureLayer(string diffuse, string normal, float minHeight, float maxHeight, float fadeDistance)
+        {
+            TerrainTextureLayer terrainTextureLayer = new TerrainTextureLayer(this.NodeId, diffuse, normal, minHeight, maxHeight, fadeDistance);
+
+            await this.session.SendAction(this.session.GetTunnelSendRequest(terrainTextureLayer.GetAddLayerJsonObject()));
+        }
+
+        public async Task RemoveTextureLayer()
+        {
+            await this.session.SendAction(this.session.GetTunnelSendRequest(TerrainTextureLayer.GetDeleteLayerJsonObject(this.NodeId)));
         }
 
         public JObject GetAddJsonObject()
