@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,24 +16,29 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using HealthcareServer.Vr;
 using HealthcareServer.Vr.World;
+using Microsoft.Win32;
 using Networking.Client;
 using Networking.Server;
 using Networking.VrServer;
 using Newtonsoft.Json.Linq;
+using UIControls;
+using UIControls.Menu;
 
 namespace HealthcareClient
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ClientWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window {
+    public partial class ClientWindow : Window, IServerDataReceiver {
 
         private Client client;
         private Session session;
-        private List<string> sessies; 
-        public MainWindow()
+        public ClientWindow()
         {
             InitializeComponent();
+            this.client = new Client("145.48.6.10", 6666, this, null);
+            this.client.Connect();
+            GetCurrentSessions();
         }
 
         private async Task Initialize(string sessionHost)
@@ -43,11 +49,9 @@ namespace HealthcareClient
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (sessies.Equals(Environment.MachineName))
-            {
-                string host = Environment.MachineName;
-                Task.Run(() => Initialize(host));
-            }
+            string host = sessionBox.SelectedItem.ToString();
+            Task.Run(() => Initialize(host));
+            lblConnected.Content = "Verbonden";
         }
 
         private StackPanel GetInputField(string header, string text, bool isNumber)
@@ -128,7 +132,7 @@ namespace HealthcareClient
 
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 {
-                    this.sessies = sessions;
+                    this.sessionBox.ItemsSource = sessions;
                 }));
             }
         }
@@ -142,6 +146,22 @@ namespace HealthcareClient
         {
             Node node = await this.session.GetScene().FindNode("GroundPlane");
             await node.Delete();
+        }
+
+        private void BtnScene_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text files (*.Scene)|*.Scene";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string sceneInput = File.ReadAllText(openFileDialog.FileName);
+                lblScene.Content = openFileDialog.FileName;
+            }
+        }
+
+        private void BtnStart_Click(object sender, RoutedEventArgs e)
+        {
+           Task.Run(()=> session.Create());
         }
     }
 }
