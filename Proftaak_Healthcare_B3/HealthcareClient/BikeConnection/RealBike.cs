@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimulatieTest
+namespace HealthcareClient.Bike
 {
-    public interface IBikeDataReceiver
+    class RealBike
     {
-        void ReceiveBikeData(byte[] data, Bike bike);
     }
 }

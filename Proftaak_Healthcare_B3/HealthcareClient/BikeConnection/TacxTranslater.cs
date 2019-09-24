@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimulatieTest
+namespace HealthcareClient.Bike
 {
-    class Class1
+    class TacxTranslater
     {
     }
 }

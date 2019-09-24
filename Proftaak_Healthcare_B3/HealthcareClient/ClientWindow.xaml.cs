@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using HealthcareClient.Bike;
 using HealthcareServer.Vr;
 using HealthcareServer.Vr.World;
 using Microsoft.Win32;
@@ -29,18 +30,26 @@ namespace HealthcareClient
     /// <summary>
     /// Interaction logic for ClientWindow.xaml
     /// </summary>
-    public partial class ClientWindow : Window, IServerDataReceiver {
+    public partial class ClientWindow : Window, IServerDataReceiver, IBikeDataReceiver {
 
         private Client client;
         private Session session;
+
         public ClientWindow()
         {
             InitializeComponent();
             this.client = new Client("145.48.6.10", 6666, this, null);
             this.client.Connect();
             GetCurrentSessions();
+            ConnectToBike(this);
+
         }
 
+        private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
+        {
+            RealBike bike = new RealBike("00476", bikeDataReceiver);
+
+        }
         private async Task Initialize(string sessionHost)
         {
             this.session = new Session(ref client, sessionHost);
@@ -162,6 +171,47 @@ namespace HealthcareClient
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
            Task.Run(()=> session.Create());
+        }
+
+        public void ReceiveBikeData(byte[] data, Bike.Bike bike)
+        {
+            Dictionary<string, int> translatedData = TacxTranslator.Translate(BitConverter.ToString(data).Split('-'));
+            int PageID;
+            translatedData.TryGetValue("PageID", out PageID); //hier moet ik van overgeven maar het kan niet anders
+            if (25 == PageID)
+            {
+                byte[] message = parseBikeData(translatedData);
+                //Prepare data to be sent to server
+                byte[] buffer = new byte[message.Length+1];
+
+                //Send data to server
+
+            }
+
+
+        }
+
+        public byte[] parseBikeData(Dictionary<string, int> translatedData)
+        {
+            //TODO: data is niet gesorteerd, alleen Page 25 wordt geparsed
+            byte[] message = new byte[10];
+            message[0] = 0b10000000 + 0b00000001;
+            message[1] = 1; //Heartrate ID
+            message[2] = 0; //Heartbeat -- TODO implement BLE HeartrateMonitor
+            message[3] = 3; //Power ID
+            int power;  translatedData.TryGetValue("InstantaneousPower", out power);
+            byte[] Power = BitConverter.GetBytes(power);
+            message[3] = Power[0]; message[4] = Power[1]; message[5] = Power[2]; message[6] = Power[3]; //Instantaneous Power
+            message[7] = 7; //Snelheid ID
+            message[8] = 0; //Snelheid
+            message[9] = 9; //Trapritme ID
+            int ritme; translatedData.TryGetValue("InstantaneousCadence", out ritme);
+            byte[] Cadence = BitConverter.GetBytes(ritme);
+            message[10] = Cadence[0]; message[11] = Cadence[1]; message[12] = Cadence[2]; message[13] = Cadence[3]; // InstantaneousCadence
+            message[14] = 0; //Check bits
+            byte heartRateError = 0b0100000
+            message[14] = message[14] + heartRateError;
+            return message;
         }
     }
 }
