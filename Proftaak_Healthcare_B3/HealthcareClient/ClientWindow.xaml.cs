@@ -15,31 +15,34 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using HealthcareClient.Bike;
+using HealthcareClient.BikeConnection;
+using HealthcareClient.ServerConnection;
 using HealthcareServer.Vr;
 using HealthcareServer.Vr.World;
 using Microsoft.Win32;
 using Networking.Client;
-using Networking.Server;
-using Networking.VrServer;
 using Newtonsoft.Json.Linq;
-using UIControls;
-using UIControls.Menu;
+
+
 
 namespace HealthcareClient
 {
     /// <summary>
     /// Interaction logic for ClientWindow.xaml
     /// </summary>
-    public partial class ClientWindow : Window, IServerDataReceiver, IBikeDataReceiver {
 
+    public partial class ClientWindow : Window, IServerDataReceiver, IBikeDataReceiver, IClientMessageReceiver
+    {
+        [Flags] public enum CheckBits { Sessie = 0b0001000, BikeError = 0b0000100, HeartBeatError = 0b00000010, VRError = 0b00000001 };
         private Client client;
         private Session session;
-
+        private DataManager dataManager;
         public ClientWindow()
         {
             InitializeComponent();
             this.client = new Client("145.48.6.10", 6666, this, null);
             this.client.Connect();
+            dataManager = new DataManager(this);
             GetCurrentSessions();
             ConnectToBike(this);
 
@@ -170,48 +173,47 @@ namespace HealthcareClient
 
         private void BtnStart_Click(object sender, RoutedEventArgs e)
         {
-           Task.Run(()=> session.Create());
+            Task.Run(() => session.Create());
         }
 
-        public void ReceiveBikeData(byte[] data, Bike.Bike bike)
+        //Upon receiving data from the bike and Heartbeat Sensor, try to place in a Struct. 
+        //Once struct is full or data would be overwritten, it is sent to the server
+        void IBikeDataReceiver.ReceiveBikeData(byte[] data, Bike.Bike bike)
         {
             Dictionary<string, int> translatedData = TacxTranslator.Translate(BitConverter.ToString(data).Split('-'));
             int PageID;
             translatedData.TryGetValue("PageID", out PageID); //hier moet ik van overgeven maar het kan niet anders
             if (25 == PageID)
             {
-                byte[] message = parseBikeData(translatedData);
-                //Prepare data to be sent to server
-                byte[] buffer = new byte[message.Length+1];
-
-                //Send data to server
-
+                int power; translatedData.TryGetValue("InstantaneousPower", out power);
+                int cadence; translatedData.TryGetValue("InstantaneousCadence", out cadence);
+                dataManager.addPage25(power, cadence);
             }
-
-
+            else if (16 == PageID)
+            {
+                int speed; translatedData.TryGetValue("speed", out speed);
+                dataManager.addPage16(speed);
+            }
         }
 
-        public byte[] parseBikeData(Dictionary<string, int> translatedData)
+        private void ReceiveHeartbeatData(byte[] data)
         {
-            //TODO: data is niet gesorteerd, alleen Page 25 wordt geparsed
-            byte[] message = new byte[10];
-            message[0] = 0b10000000 + 0b00000001;
-            message[1] = 1; //Heartrate ID
-            message[2] = 0; //Heartbeat -- TODO implement BLE HeartrateMonitor
-            message[3] = 3; //Power ID
-            int power;  translatedData.TryGetValue("InstantaneousPower", out power);
-            byte[] Power = BitConverter.GetBytes(power);
-            message[3] = Power[0]; message[4] = Power[1]; message[5] = Power[2]; message[6] = Power[3]; //Instantaneous Power
-            message[7] = 7; //Snelheid ID
-            message[8] = 0; //Snelheid
-            message[9] = 9; //Trapritme ID
-            int ritme; translatedData.TryGetValue("InstantaneousCadence", out ritme);
-            byte[] Cadence = BitConverter.GetBytes(ritme);
-            message[10] = Cadence[0]; message[11] = Cadence[1]; message[12] = Cadence[2]; message[13] = Cadence[3]; // InstantaneousCadence
-            message[14] = 0; //Check bits
-            byte heartRateError = 0b0100000
-            message[14] = message[14] + heartRateError;
-            return message;
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Called from datamanager. Parses a complete ClientMessage into a packet to be sent via TCP
+        /// </summary>
+        void IClientMessageReceiver.handleClientMessage(ClientMessage clientMessage)
+        {
+            byte clientID = 0b00000001; // message is from a client
+            byte Checkbits = (byte)CheckBits.HeartBeatError; //heartbeat not implemented yet
+            byte[] message = clientMessage.toByteArray();
+            byte[] messageLength = BitConverter.GetBytes(message.Length);
+            message.Prepend(messageLength[3]);
+            message.Prepend(clientID);
+            message.Append(Checkbits);
+            Send( message);
         }
     }
 }
