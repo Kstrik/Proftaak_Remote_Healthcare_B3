@@ -215,5 +215,10 @@ namespace HealthcareClient
             message.Append(Checkbits);
             Send( message);
         }
+
+        private void Send(byte[] message)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -124,7 +124,7 @@ namespace HealthcareServer.Vr
             }
             catch(Exception e)
             {
-                MessageBox.Show("Error!");
+                MessageBox.Show("Error!" + e.Message);
             }
         }
 
