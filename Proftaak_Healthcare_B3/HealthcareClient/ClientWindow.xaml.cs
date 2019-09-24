@@ -31,9 +31,8 @@ namespace HealthcareClient
     /// Interaction logic for ClientWindow.xaml
     /// </summary>
 
-    public partial class ClientWindow : Window, IServerDataReceiver, IBikeDataReceiver, IClientMessageReceiver
+    public partial class ClientWindow : Window, IServerDataReceiver
     {
-        [Flags] public enum CheckBits { Sessie = 0b0001000, BikeError = 0b0000100, HeartBeatError = 0b00000010, VRError = 0b00000001 };
         private Client client;
         private Session session;
         private DataManager dataManager;
@@ -42,15 +41,17 @@ namespace HealthcareClient
             InitializeComponent();
             this.client = new Client("145.48.6.10", 6666, this, null);
             this.client.Connect();
-            dataManager = new DataManager(this);
+            dataManager = new DataManager(dataManager);
             GetCurrentSessions();
-            ConnectToBike(this);
+            ConnectToBike(dataManager);
+
+
 
         }
 
         private void ConnectToBike(IBikeDataReceiver bikeDataReceiver)
         {
-            RealBike bike = new RealBike("00476", bikeDataReceiver);
+            RealBike bike = new RealBike("00438", dataManager);
 
         }
         private async Task Initialize(string sessionHost)
@@ -176,49 +177,6 @@ namespace HealthcareClient
             Task.Run(() => session.Create());
         }
 
-        //Upon receiving data from the bike and Heartbeat Sensor, try to place in a Struct. 
-        //Once struct is full or data would be overwritten, it is sent to the server
-        void IBikeDataReceiver.ReceiveBikeData(byte[] data, Bike.Bike bike)
-        {
-            Dictionary<string, int> translatedData = TacxTranslator.Translate(BitConverter.ToString(data).Split('-'));
-            int PageID;
-            translatedData.TryGetValue("PageID", out PageID); //hier moet ik van overgeven maar het kan niet anders
-            if (25 == PageID)
-            {
-                int power; translatedData.TryGetValue("InstantaneousPower", out power);
-                int cadence; translatedData.TryGetValue("InstantaneousCadence", out cadence);
-                dataManager.addPage25(power, cadence);
-            }
-            else if (16 == PageID)
-            {
-                int speed; translatedData.TryGetValue("speed", out speed);
-                dataManager.addPage16(speed);
-            }
-        }
-
-        private void ReceiveHeartbeatData(byte[] data)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Called from datamanager. Parses a complete ClientMessage into a packet to be sent via TCP
-        /// </summary>
-        void IClientMessageReceiver.handleClientMessage(ClientMessage clientMessage)
-        {
-            byte clientID = 0b00000001; // message is from a client
-            byte Checkbits = (byte)CheckBits.HeartBeatError; //heartbeat not implemented yet
-            byte[] message = clientMessage.toByteArray();
-            byte[] messageLength = BitConverter.GetBytes(message.Length);
-            message.Prepend(messageLength[3]);
-            message.Prepend(clientID);
-            message.Append(Checkbits);
-            Send( message);
-        }
-
-        private void Send(byte[] message)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
