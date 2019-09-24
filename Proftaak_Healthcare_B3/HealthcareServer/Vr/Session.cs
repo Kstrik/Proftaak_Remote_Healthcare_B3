@@ -124,6 +124,9 @@ namespace HealthcareServer.Vr
             }
             catch(Exception e)
             {
+#if DEBUG
+                Console.WriteLine(e.Message);
+#endif
                 MessageBox.Show("Error!");
             }
         }

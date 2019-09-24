@@ -143,6 +143,9 @@ namespace Networking.Client
             }
             catch(Exception e)
             {
+#if DEBUG
+                Console.WriteLine(e.Message);
+#endif
                 return new byte[0];
             }
         }
